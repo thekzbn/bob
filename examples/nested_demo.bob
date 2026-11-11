@@ -1,0 +1,9 @@
+// Rule C: DOM Nesting Test
+page: bg #1a1a24 #eaeaea 'Inter'
+
+center div(card): h1: "Bob Component" #f5f5dc 2.0, a: "Visit Bob Lang", button(clicker): "Click me" bg #d4af37 1.0
+button: "Outside the div"
+
+when click(clicker) make-->
+    clicker: "Clicked inside card!"
+<--

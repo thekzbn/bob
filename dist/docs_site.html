@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bob Application</title>
+  <style>
+/* Bob Generated CSS */
+* { box-sizing: border-box; }
+body {
+    margin: 0;
+    padding: 2rem;
+    font-family: sans-serif;
+}
+button, input { padding: 0.5rem 1rem; margin: 0.5rem; border-radius: 4px; border: 1px solid #ccc; font-size: 1rem; cursor: pointer; }
+input { cursor: text; }
+body {
+    color: #f0ede6;
+    background-color: #0e0d0c;
+    font-family: 'Inter', sans-serif;
+}
+#header_block {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+#bob_124525_401251_2624411.com {
+    color: #f0ede6;
+    font-size: 2.20rem;
+}
+#bob_124744_1331637_1043236.com {
+    font-size: 1.10rem;
+}
+#controls {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+#theme_btn {
+    color: #f0ede6;
+    background-color: #1e90ff;
+    font-size: 1.00rem;
+}
+#bob_124661_1044237_505527.com {
+    color: #1e90ff;
+}
+#section_one {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+#bob_124756_1712025_2665576.com {
+    color: #1e90ff;
+    font-size: 1.50rem;
+}
+#bob_124122_1412320_1261656.com {
+    font-size: 1.00rem;
+}
+#section_two {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+#bob_124776_307375_2400020.com {
+    color: #1e90ff;
+    font-size: 1.50rem;
+}
+#bob_124172_2445372_2251346.com {
+    font-size: 1.00rem;
+}
+#section_three {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+#bob_124716_1630121_2046066.com {
+    color: #1e90ff;
+    font-size: 1.50rem;
+}
+#bob_124112_2702331_1370200.com {
+    font-size: 1.00rem;
+}
+#header_block, header_block {
+    transition: all 0.30s ease-in-out;
+}
+
+  </style>
+</head>
+<body>
+    <div id="header_block">
+      <h1 id="bob_124525_401251_2624411.com">Bob Language Reference</h1>
+      <p id="bob_124744_1331637_1043236.com">An experimental esolang for unified web development.</p>
+    </div>
+    <div id="controls">
+      <button id="theme_btn">Toggle Theme</button>
+      <a id="bob_124661_1044237_505527.com" href="#">Source Code on GitHub</a>
+    </div>
+    <div id="section_one">
+      <h2 id="bob_124756_1712025_2665576.com">Compiler Pipeline</h2>
+      <p id="bob_124122_1412320_1261656.com">The C11 compiler converts Bob code directly into HTML, CSS, and JS.</p>
+    </div>
+    <div id="section_two">
+      <h2 id="bob_124776_307375_2400020.com">The 0 vs 00 Rule</h2>
+      <p id="bob_124172_2445372_2251346.com">0 represents uninitialized state. 00 represents numeric zero.</p>
+    </div>
+    <div id="section_three">
+      <h2 id="bob_124716_1630121_2046066.com">Rule C DOM Nesting</h2>
+      <p id="bob_124112_2702331_1370200.com">Comma-separated children allow declaring trees on a single line.</p>
+    </div>
+
+  <script>
+/* Bob Generated JavaScript Runtime */
+"use strict";
+
+function __bob_get(selector, evt) {
+    if (evt && evt.currentTarget) {
+        if (evt.currentTarget.id === selector || evt.currentTarget.tagName.toLowerCase() === selector.toLowerCase()) {
+            return [evt.currentTarget];
+        }
+    }
+    // Check exclusion selector like h4!cars
+    if (selector.includes('!')) {
+        let [tag, excl] = selector.split('!');
+        return Array.from(document.querySelectorAll(tag || '*')).filter(el => !el.classList.contains(excl) && el.tagName.toLowerCase() !== excl.toLowerCase() && el.id !== excl);
+    }
+    let el = document.getElementById(selector);
+    if (el) return [el];
+    return Array.from(document.querySelectorAll(selector));
+}
+
+function __bob_read(selector, evt) {
+    let list = __bob_get(selector, evt);
+    if (list.length > 0) return list[0].value !== undefined ? list[0].value : (list[0].textContent || '');
+    return '';
+}
+
+function __bob_update(selector, val, evt) {
+    let list = __bob_get(selector, evt);
+    list.forEach(el => {
+        if (el.tagName.toLowerCase() === 'input') {
+            el.value = (val === undefined) ? '' : val;
+        } else {
+            el.textContent = (val === undefined) ? '' : val;
+        }
+    });
+}
+
+function __bob_show(selector, evt) {
+    let list = __bob_get(selector, evt);
+    list.forEach(el => { el.style.display = ''; });
+}
+
+function __bob_hide(selector, evt) {
+    let list = __bob_get(selector, evt);
+    list.forEach(el => { el.style.display = 'none'; });
+}
+
+function __bob_bind_click(target, handler) {
+    let targets = __bob_get(target, null);
+    targets.forEach(el => {
+        el.addEventListener('click', handler);
+    });
+}
+
+// State Variables
+let theme_state = 0;
+
+window.addEventListener('DOMContentLoaded', function() {
+    const _event = null;
+    __bob_bind_click("theme_btn", function(_event) {
+        if ((theme_state === 0)) {
+            __bob_update("theme_btn", "Theme: Light Active", _event);
+            __bob_update("header_block", "Bob Documentation (Light Mode)", _event);
+            theme_state = 1;
+        } else {
+            __bob_update("theme_btn", "Theme: Dark Active", _event);
+            __bob_update("header_block", "Bob Language Reference", _event);
+            theme_state = 0;
+        }
+    });
+});
+
+  </script>
+</body>
+</html>

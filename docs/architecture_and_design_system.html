@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bob: Full System Architecture & File-by-File Compiler Blueprint</title>
+  <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #fcfbf8;
+      --surface: #ffffff;
+      --text: #171717;
+      --muted: #5e5950;
+      --border: #e5e2da;
+      --accent: #1e90ff;
+      --accent-soft: rgba(30, 144, 255, 0.12);
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', Consolas, Monaco, monospace;
+      --duration: 180ms;
+      --ease: cubic-bezier(0.57, -0.01, 0.21, 0.89);
+    }
+
+    html.dark {
+      --bg: #0e0d0c;
+      --surface: #141312;
+      --text: #f0ede6;
+      --muted: #8a857d;
+      --border: #262422;
+      --accent: #1e90ff;
+      --accent-soft: rgba(30, 144, 255, 0.16);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      font-family: var(--font-sans);
+      background-color: var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      min-height: 100vh;
+      transition: background-color var(--duration) var(--ease), color var(--duration) var(--ease);
+    }
+
+    ::selection {
+      color: #1e90ff !important;
+      background: rgba(30, 144, 255, 0.18) !important;
+    }
+
+    /* Content Layout */
+    .article-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 4.5rem 1.5rem 7rem;
+    }
+
+    /* Header Row (Integrated, No Topnav) */
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 2rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: -0.01em;
+      text-decoration: none;
+    }
+
+    .brand-title span {
+      color: var(--accent);
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      margin-left: 0.35rem;
+    }
+
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+    }
+
+    .doc-nav-link {
+      font-size: 0.85rem;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color var(--duration) var(--ease);
+    }
+
+    .doc-nav-link:hover, .doc-nav-link.active {
+      color: var(--accent);
+    }
+
+    .theme-toggle {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      width: 28px;
+      height: 28px;
+      border-radius: 4px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: color var(--duration) var(--ease), border-color var(--duration) var(--ease);
+    }
+
+    .theme-toggle:hover {
+      color: var(--text);
+      border-color: var(--accent);
+    }
+
+    header {
+      margin-bottom: 3.5rem;
+    }
+
+    h1 {
+      font-size: 2.35rem;
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      line-height: 1.25;
+      margin-bottom: 1rem;
+      color: var(--text);
+    }
+
+    .lead {
+      font-size: 1.15rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    section {
+      margin-top: 4rem;
+      padding-top: 2.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    h2 {
+      font-size: 1.45rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.15rem;
+      color: var(--text);
+    }
+
+    h3 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      margin-top: 2.25rem;
+      margin-bottom: 0.75rem;
+      color: var(--text);
+    }
+
+    h4 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+      margin-top: 1.5rem;
+      margin-bottom: 0.5rem;
+      font-family: var(--font-mono);
+    }
+
+    p {
+      font-size: 1.025rem;
+      color: var(--text);
+      margin-bottom: 1.25rem;
+    }
+
+    strong {
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    ul, ol {
+      margin-left: 1.35rem;
+      margin-bottom: 1.35rem;
+      color: var(--text);
+    }
+
+    li {
+      margin-bottom: 0.45rem;
+      font-size: 1.025rem;
+    }
+
+    code {
+      font-family: var(--font-mono);
+      font-size: 0.88em;
+      background-color: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.15rem 0.35rem;
+      border-radius: 4px;
+    }
+
+    pre {
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      background-color: var(--surface);
+      border: 1px solid var(--border);
+      padding: 1.15rem 1.25rem;
+      border-radius: 6px;
+      overflow-x: auto;
+      margin: 1.25rem 0 1.75rem;
+      line-height: 1.6;
+      color: var(--text);
+    }
+
+    /* Diagram Canvas */
+    .diagram-panel {
+      margin: 2.5rem 0 3.5rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background-color: var(--surface);
+      overflow-x: auto;
+      padding: 1.5rem;
+    }
+
+    .diagram-caption {
+      margin-top: 1.25rem;
+      font-size: 0.825rem;
+      color: var(--muted);
+      text-align: center;
+      font-family: var(--font-mono);
+    }
+
+    /* Architecture Grid */
+    .module-block {
+      margin-top: 2.5rem;
+      padding-top: 1.75rem;
+      border-top: 1px dashed var(--border);
+    }
+
+    .module-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 0.75rem;
+    }
+
+    .module-title {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--text);
+      font-family: var(--font-mono);
+    }
+
+    .module-role {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    /* Function Table */
+    .func-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.25rem 0 1.75rem;
+      font-size: 0.875rem;
+    }
+
+    .func-table th, .func-table td {
+      border: 1px solid var(--border);
+      padding: 0.6rem 0.75rem;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .func-table th {
+      background-color: var(--surface);
+      font-weight: 600;
+      color: var(--text);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .func-table td.sig {
+      font-family: var(--font-mono);
+      font-size: 0.825rem;
+      color: var(--accent);
+      white-space: nowrap;
+    }
+
+    .func-table td.desc {
+      color: var(--text);
+      line-height: 1.55;
+    }
+
+    .func-table td.calls {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    /* ID Breakdown Monospace Table */
+    .id-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.875rem;
+    }
+
+    .id-table th, .id-table td {
+      border: 1px solid var(--border);
+      padding: 0.65rem 0.85rem;
+      text-align: left;
+    }
+
+    .id-table th {
+      background-color: var(--surface);
+      font-weight: 600;
+      color: var(--text);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .id-table td {
+      color: var(--muted);
+      font-family: var(--font-mono);
+    }
+
+    .id-table td.desc {
+      font-family: var(--font-sans);
+      color: var(--text);
+    }
+
+    footer {
+      margin-top: 5rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.85rem;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+  </style>
+</head>
+<body>
+
+  <article class="article-container">
+
+    <div class="header-row">
+      <a href="architecture_and_design_system.html" class="brand-title">Bob <span>Compiler Architecture</span></a>
+      <div class="header-controls">
+        <a href="architecture_and_design_system.html" class="doc-nav-link active">Architecture & Files</a>
+        <a href="getting_started_guide.html" class="doc-nav-link">Getting Started</a>
+        <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme">
+          <svg id="sunIcon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          <svg id="moonIcon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+      </div>
+    </div>
+
+    <header>
+      <h1>System Architecture & Complete File Reference</h1>
+      <p class="lead">An exhaustive structural breakdown of the Bob compiler, including every file, data structure, major function, and call pathway across the translation pipeline.</p>
+    </header>
+
+    <section>
+      <h2>Comprehensive System Architecture Diagram</h2>
+      <p>
+        The following technical schematic maps every file in the Bob compiler pipeline, displaying each module's internal functions, structural data models, and directional call relationships:
+      </p>
+
+      <div class="diagram-panel">
+        <svg viewBox="0 0 920 620" width="100%" height="620" xmlns="http://www.w3.org/2000/svg">
+          <!-- Connectors & Data Paths -->
+          <!-- main to lexer -->
+          <path d="M 120 100 L 120 150" stroke="currentColor" stroke-width="1.2" opacity="0.35"/>
+          <!-- lexer to parser -->
+          <path d="M 230 205 L 310 205" stroke="currentColor" stroke-width="1.2" opacity="0.35"/>
+          <!-- parser to ast -->
+          <path d="M 430 150 L 430 100" stroke="currentColor" stroke-width="1.2" opacity="0.35"/>
+          <!-- main to meta -->
+          <path d="M 230 75 L 700 75 L 700 150" stroke="currentColor" stroke-width="1.2" opacity="0.35"/>
+          <!-- meta to id_gen -->
+          <path d="M 700 280 L 700 340" stroke="currentColor" stroke-width="1.2" opacity="0.35"/>
+          <!-- parser to id_gen -->
+          <path d="M 550 240 L 610 370" stroke="currentColor" stroke-width="1.2" opacity="0.35"/>
+          <!-- main to codegen -->
+          <path d="M 175 100 L 175 490 L 310 490" stroke="currentColor" stroke-width="1.2" opacity="0.35"/>
+          <!-- ast to codegen -->
+          <path d="M 430 100 L 430 440" stroke="currentColor" stroke-width="1.2" opacity="0.35"/>
+          <!-- codegen to outputs -->
+          <path d="M 550 490 L 630 490" stroke="currentColor" stroke-width="1.2" opacity="0.35"/>
+
+          <!-- common.h global backing note -->
+          <rect x="20" y="570" width="880" height="35" rx="4" fill="var(--bg)" stroke="var(--border)" stroke-width="1"/>
+          <text x="460" y="592" text-anchor="middle" font-family="var(--font-mono)" font-size="11" fill="var(--muted)">common.h backing all modules: bob_malloc, bob_calloc, bob_strdup, StringBuilder (sb_create, sb_append, sb_free)</text>
+
+          <!-- MODULE 1: main.c -->
+          <g>
+            <rect x="20" y="20" width="210" height="80" rx="4" fill="var(--bg)" stroke="var(--border)" stroke-width="1.2"/>
+            <text x="35" y="42" font-family="var(--font-mono)" font-size="12" font-weight="600" fill="var(--accent)">src/main.c</text>
+            <text x="35" y="60" font-family="var(--font-mono)" font-size="10" fill="var(--muted)">main(argc, argv)</text>
+            <text x="35" y="75" font-family="var(--font-mono)" font-size="10" fill="var(--muted)">read_entire_file(path)</text>
+            <text x="35" y="90" font-family="var(--font-mono)" font-size="10" fill="var(--muted)">print_usage(prog_name)</text>
+          </g>
+
+          <!-- MODULE 2: ast.h / ast.c -->
+          <g>
+            <rect x="310" y="20" width="240" height="80" rx="4" fill="var(--bg)" stroke="var(--border)" stroke-width="1.2"/>
+            <text x="325" y="42" font-family="var(--font-mono)" font-size="12" font-weight="600" fill="var(--accent)">src/ast.h & ast.c</text>
+            <text x="325" y="60" font-family="var(--font-mono)" font-size="10" fill="var(--muted)">Types: Expr, BobElement, Stmt, Program</text>
+            <text x="325" y="75" font-family="var(--font-mono)" font-size="10" fill="var(--muted)">element_create, element_add_child</text>
+            <text x="325" y="90" font-family="var(--font-mono)" font-size="10" fill="var(--muted)">expr_create_*, stmt_create, program_*</text>
+          </g>
+
+          <!-- MODULE 3: lexer.h / lexer.c -->
+          <g>
+            <rect x="20" y="150" width="210" height="150" rx="4" fill="var(--bg)" stroke="var(--border)" stroke-width="1.2"/>
+            <text x="35" y="172" font-family="var(--font-mono)" font-size="12" font-weight="600" fill="var(--accent)">src/lexer.h & lexer.c</text>
+            <text x="35" y="192" font-family="var(--font-mono)" font-size="10" fill="var(--text)">Types: Token, TokenType, Lexer</text>
+            <text x="35" y="212" font-family="var(--font-mono)" font-size="10" fill="var(--muted)">lexer_create(source)</text>
+            <text x="35" y="228" font-family="var(--font-mono)" font-size="10" fill="var(--muted)">lexer_next_token(lexer)</text>
+            <text x="35" y="244" font-family="var(--font-mono)" font-size="10" fill="var(--muted)">advance, peek, peek_next</text>
+            <text x="35" y="260" font-family="var(--font-mono)" font-size="10" fill="var(--muted)">skip_whitespace_and_comments</text>
+            <text x="35" y="276" font-family="var(--font-mono)" font-size="10" fill="var(--muted)">make_token, token_free</text>
+          </g>
+
+          <!-- MODULE 4: parser.h / parser.c -->
+          <g>
+            <rect x="310" y="150" width="240" height="210" rx="4" fill="var(--bg)" stroke="var(--border)" stroke-width="1.2"/>
+            <text x="325" y="172" font-family="var(--font-mono)" font-size="12" font-weight="600" fill="var(--accent)">src/parser.h & parser.c</text>
+            <text x="325" y="192" font-family="var(--font-mono)" font-size="10" fill="var(--text)">Type: Parser (state, current, peek)</text>
+            <text x="325" y="212" font-family="var(--font-mono)" font-size="10" fill="var(--muted)">parser_create, parser_free</text>
+            <text x="325" y="228" font-family="var(--font-mono)" font-size="10" fill="var(--muted)">parser_parse_program</text>
+            <text x="325" y="244" font-family="var(--font-mono)" font-size="10" fill="var(--muted)">parse_statement, parse_expression</text>
+            <text x="325" y="260" font-family="var(--font-mono)" font-size="10" fill="var(--muted)">parse_element_statement (Rule C)</text>
+            <text x="325" y="276" font-family="var(--font-mono)" font-size="10" fill="var(--muted)">parse_single_element</text>
+            <text x="325" y="292" font-family="var(--font-mono)" font-size="10" fill="var(--muted)">parse_content_modifiers</text>
+            <text x="325" y="308" font-family="var(--font-mono)" font-size="10" fill="var(--muted)">parse_if_stmt, parse_when_click</text>
+            <text x="325" y="324" font-family="var(--font-mono)" font-size="10" fill="var(--muted)">parse_smooth, parse_id_config</text>
+          </g>
+
+          <!-- MODULE 5: meta.h / meta.c -->
+          <g>
+            <rect x="610" y="150" width="290" height="130" rx="4" fill="var(--bg)" stroke="var(--border)" stroke-width="1.2"/>
+            <text x="625" y="172" font-family="var(--font-mono)" font-size="12" font-weight="600" fill="var(--accent)">src/meta.h & meta.c</text>
+            <text x="625" y="192" font-family="var(--font-mono)" font-size="10" fill="var(--text)">Types: MetadataRegistry, ElementMeta</text>
+            <text x="625" y="212" font-family="var(--font-mono)" font-size="10" fill="var(--muted)">meta_load_or_create(source_path)</text>
+            <text x="625" y="228" font-family="var(--font-mono)" font-size="10" fill="var(--muted)">meta_find_or_register_element(fp)</text>
+            <text x="625" y="244" font-family="var(--font-mono)" font-size="10" fill="var(--muted)">derive_3digit_octal(val)</text>
+            <text x="625" y="260" font-family="var(--font-mono)" font-size="10" fill="var(--muted)">meta_save(meta), meta_free(meta)</text>
+          </g>
+
+          <!-- MODULE 6: id_gen.h / id_gen.c -->
+          <g>
+            <rect x="610" y="340" width="290" height="150" rx="4" fill="var(--bg)" stroke="var(--border)" stroke-width="1.2"/>
+            <text x="625" y="362" font-family="var(--font-mono)" font-size="12" font-weight="600" fill="var(--accent)">src/id_gen.h & id_gen.c</text>
+            <text x="625" y="382" font-family="var(--font-mono)" font-size="10" fill="var(--text)">Type: IdGenerator (prefix, suffix, set)</text>
+            <text x="625" y="402" font-family="var(--font-mono)" font-size="10" fill="var(--muted)">id_gen_create, id_gen_set_config</text>
+            <text x="625" y="418" font-family="var(--font-mono)" font-size="10" fill="var(--muted)">id_gen_generate(gen, meta, elem_meta)</text>
+            <text x="625" y="434" font-family="var(--font-mono)" font-size="10" fill="var(--muted)">scramble_hex (Fisher-Yates)</text>
+            <text x="625" y="450" font-family="var(--font-mono)" font-size="10" fill="var(--muted)">generate_scrambled_octal_block</text>
+            <text x="625" y="466" font-family="var(--font-mono)" font-size="10" fill="var(--muted)">id_exists, register_id, id_gen_free</text>
+          </g>
+
+          <!-- MODULE 7: codegen.h / codegen.c -->
+          <g>
+            <rect x="310" y="440" width="240" height="110" rx="4" fill="var(--bg)" stroke="var(--border)" stroke-width="1.2"/>
+            <text x="325" y="462" font-family="var(--font-mono)" font-size="12" font-weight="600" fill="var(--accent)">src/codegen.h & codegen.c</text>
+            <text x="325" y="482" font-family="var(--font-mono)" font-size="10" fill="var(--muted)">codegen_generate(prog, opts)</text>
+            <text x="325" y="498" font-family="var(--font-mono)" font-size="10" fill="var(--muted)">generate_element_html (Recursive)</text>
+            <text x="325" y="514" font-family="var(--font-mono)" font-size="10" fill="var(--muted)">generate_element_css (Transitions)</text>
+            <text x="325" y="530" font-family="var(--font-mono)" font-size="10" fill="var(--muted)">emit_js_stmt, emit_js_expr</text>
+          </g>
+
+          <!-- OUTPUTS -->
+          <g>
+            <rect x="630" y="510" width="270" height="40" rx="4" fill="var(--bg)" stroke="var(--accent)" stroke-width="1.2"/>
+            <text x="765" y="534" text-anchor="middle" font-family="var(--font-mono)" font-size="11" fill="var(--text)">index.html (Single Bundle) / split</text>
+          </g>
+        </svg>
+        <p class="diagram-caption">Figure 1. Complete C11 Compiler Module Call Graph and Structural Data Pathways</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Exhaustive File-by-File Breakdown</h2>
+      <p>
+        Below is the complete engineering specification for every header and implementation file comprising the Bob compiler.
+      </p>
+
+      <!-- File 1: common.h -->
+      <div class="module-block">
+        <div class="module-header">
+          <span class="module-title">src/common.h</span>
+          <span class="module-role">Memory Management & Dynamic Buffer Subsystem</span>
+        </div>
+        <p>
+          Defines standardized, failure-aborting heap allocation routines and the <code>StringBuilder</code> dynamic buffer abstraction used throughout lexing, parsing, and code generation.
+        </p>
+
+        <h4>Structures</h4>
+        <ul>
+          <li><code>StringBuilder</code>: Dynamic heap buffer with <code>char *data</code>, <code>size_t length</code>, and <code>size_t capacity</code>, self-doubling when capacity is reached.</li>
+        </ul>
+
+        <h4>Function Directory</h4>
+        <table class="func-table">
+          <thead>
+            <tr>
+              <th>Signature</th>
+              <th>Description</th>
+              <th>Called By</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="sig">void *bob_malloc(size_t size)</td>
+              <td class="desc">Wraps <code>malloc</code>; immediately writes an error to stderr and aborts via <code>exit(EXIT_FAILURE)</code> if memory allocation fails.</td>
+              <td class="calls">All modules</td>
+            </tr>
+            <tr>
+              <td class="sig">void *bob_calloc(size_t count, size_t size)</td>
+              <td class="desc">Wraps <code>calloc</code>, zero-initializing buffers with catastrophic out-of-memory termination.</td>
+              <td class="calls">Parser, AST, Meta, IdGen</td>
+            </tr>
+            <tr>
+              <td class="sig">void *bob_realloc(void *ptr, size_t size)</td>
+              <td class="desc">Reallocates heap blocks with failure checking for dynamically sized lists.</td>
+              <td class="calls">AST, Parser, IdGen, Meta</td>
+            </tr>
+            <tr>
+              <td class="sig">char *bob_strdup(const char *s)</td>
+              <td class="desc">Safe heap string duplication, allocating <code>strlen(s) + 1</code> bytes via <code>bob_malloc</code>.</td>
+              <td class="calls">Lexer, AST, Parser, Meta</td>
+            </tr>
+            <tr>
+              <td class="sig">StringBuilder *sb_create(void)</td>
+              <td class="desc">Initializes a dynamic string buffer with an initial capacity of 64 bytes and null-terminator.</td>
+              <td class="calls">Lexer, Codegen</td>
+            </tr>
+            <tr>
+              <td class="sig">void sb_append(StringBuilder *sb, const char *str)</td>
+              <td class="desc">Appends a null-terminated string to the dynamic buffer, doubling capacity as needed.</td>
+              <td class="calls">Codegen, Lexer</td>
+            </tr>
+            <tr>
+              <td class="sig">void sb_append_len(StringBuilder *sb, const char *str, size_t len)</td>
+              <td class="desc">Appends an explicit length byte slice to the buffer.</td>
+              <td class="calls">sb_append, sb_append_char</td>
+            </tr>
+            <tr>
+              <td class="sig">void sb_append_char(StringBuilder *sb, char c)</td>
+              <td class="desc">Appends a single character to the buffer.</td>
+              <td class="calls">Lexer string escapes</td>
+            </tr>
+            <tr>
+              <td class="sig">void sb_free(StringBuilder *sb)</td>
+              <td class="desc">Releases internal buffer data and the enclosing <code>StringBuilder</code> struct.</td>
+              <td class="calls">Lexer, Codegen</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- File 2: lexer.h & lexer.c -->
+      <div class="module-block">
+        <div class="module-header">
+          <span class="module-title">src/lexer.h & src/lexer.c</span>
+          <span class="module-role">Line-Aware Lexical Tokenizer</span>
+        </div>
+        <p>
+          Transforms raw UTF-8 source strings into a stream of structured <code>Token</code> instances. Preserves newlines as structural tokens (since Bob is line-based) while collapsing non-semantic consecutive blank lines.
+        </p>
+
+        <h4>Structures & Enumerations</h4>
+        <ul>
+          <li><code>TokenType</code>: Enum covering literal strings, multi-line triple strings (<code>"""</code>), font names, numbers, hex colors, brackets (<code>[</code>, <code>]</code>), dots (<code>.</code>), block arrows (<code>make--></code>, <code>&lt;--</code>, <code>-></code>), and keywords (<code>when</code>, <code>click</code>, <code>if</code>, <code>whisper</code>, <code>yell</code>, <code>tell</code>, <code>show</code>, <code>hide</code>, <code>read</code>, <code>smooth</code>, <code>page</code>, <code>all</code>, <code>add_class</code>, <code>remove_class</code>, <code>toggle_class</code>, <code>js</code>).</li>
+          <li><code>Token</code>: Holds <code>TokenType type</code>, <code>char *text</code>, <code>int line</code>, and <code>int col</code>.</li>
+          <li><code>Lexer</code>: Cursor containing <code>const char *source</code>, <code>size_t pos</code>, <code>int line</code>, and <code>int col</code>. Supports dashed identifier lexing for attributes (e.g. <code>aria-label</code>, <code>data-theme</code>).</li>
+        </ul>
+
+        <h4>Function Directory</h4>
+        <table class="func-table">
+          <thead>
+            <tr>
+              <th>Signature</th>
+              <th>Description</th>
+              <th>Called By</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="sig">Lexer *lexer_create(const char *source)</td>
+              <td class="desc">Allocates and initializes a new lexer instance over the supplied null-terminated source string.</td>
+              <td class="calls">main.c</td>
+            </tr>
+            <tr>
+              <td class="sig">Token lexer_next_token(Lexer *lexer)</td>
+              <td class="desc">Scans the next syntactic token. Handles string escape sequences, multi-character arrows, numbers, comments, and collapses consecutive newlines.</td>
+              <td class="calls">parser_create, advance</td>
+            </tr>
+            <tr>
+              <td class="sig">static char peek(Lexer *lexer)</td>
+              <td class="desc">Returns the current character under the scan cursor without advancing position.</td>
+              <td class="calls">lexer_next_token</td>
+            </tr>
+            <tr>
+              <td class="sig">static char peek_next(Lexer *lexer)</td>
+              <td class="desc">Looks ahead by one character past the scan cursor.</td>
+              <td class="calls">lexer_next_token</td>
+            </tr>
+            <tr>
+              <td class="sig">static char advance(Lexer *lexer)</td>
+              <td class="desc">Consumes and returns the current character, updating line and column counters accordingly.</td>
+              <td class="calls">lexer_next_token</td>
+            </tr>
+            <tr>
+              <td class="sig">static bool match_str(Lexer *lexer, const char *p)</td>
+              <td class="desc">Checks if the upcoming character sequence matches a specific literal pattern (e.g. <code>&lt;--</code>, <code>make--></code>), consuming it on match.</td>
+              <td class="calls">lexer_next_token</td>
+            </tr>
+            <tr>
+              <td class="sig">static void skip_whitespace_and_comments(Lexer *lexer)</td>
+              <td class="desc">Consumes horizontal whitespace (spaces, tabs, carriage returns) and line comments beginning with <code>//</code> up to the newline.</td>
+              <td class="calls">lexer_next_token</td>
+            </tr>
+            <tr>
+              <td class="sig">static Token make_token(...)</td>
+              <td class="desc">Allocates and constructs a <code>Token</code> struct populated with duplicate token text and line/column telemetry.</td>
+              <td class="calls">lexer_next_token</td>
+            </tr>
+            <tr>
+              <td class="sig">void token_free(Token *token)</td>
+              <td class="desc">Deallocates token text buffers and nullifies pointers.</td>
+              <td class="calls">parser.c</td>
+            </tr>
+            <tr>
+              <td class="sig">void lexer_free(Lexer *lexer)</td>
+              <td class="desc">Frees the lexer cursor memory.</td>
+              <td class="calls">main.c</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- File 3: ast.h & ast.c -->
+      <div class="module-block">
+        <div class="module-header">
+          <span class="module-title">src/ast.h & src/ast.c</span>
+          <span class="module-role">Abstract Syntax Tree Data Models & Lifecycle</span>
+        </div>
+        <p>
+          Declares the hierarchical node models representing Bob programs, including expressions, element declarations with nested child lists, styling modifiers, and control flow blocks.
+        </p>
+
+        <h4>Structures</h4>
+        <ul>
+          <li><code>Expr</code>: Expression node supporting uninitialized zero (<code>0</code>), numbers (including <code>00</code> numeric zero flag), string literals, multi-line triple strings, variable references, binary operations, assignments, <code>read &lt;target&gt;</code> calls, and JavaScript interop expressions (<code>EXPR_JS</code>).</li>
+          <li><code>Attribute</code>: Key-value pair with optional value and boolean attribute flag for general HTML element attributes.</li>
+          <li><code>StyleModifiers</code>: Stores alignment (<code>center</code>, <code>left</code>, <code>right</code>), text color, background color, font family, font size in rem, bold, italic, and hide flags.</li>
+          <li><code>BobElement</code>: DOM node holding tag name, optional custom ID, automatic ID, content expression, styling modifiers, dynamic list of <code>Attribute</code>s, <code>is_svg</code> flag, and a dynamic array of child <code>BobElement*</code> pointers for Rule C and block nesting.</li>
+          <li><code>Stmt</code>: Statement union supporting variable assignments, global page/all styling, element creation, element mutation, console output, alerts, show/hide, smooth transitions, conditionals, event listeners, class styles (<code>.card: ...</code>), class mutations (<code>add_class</code>, <code>remove_class</code>, <code>toggle_class</code>), and JavaScript statements/blocks (<code>STMT_JS_STMT</code>).</li>
+          <li><code>Program</code>: Top-level program representation containing an array of <code>Stmt*</code> statements.</li>
+        </ul>
+
+        <h4>Function Directory</h4>
+        <table class="func-table">
+          <thead>
+            <tr>
+              <th>Signature</th>
+              <th>Description</th>
+              <th>Called By</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="sig">Expr *expr_create_uninit_zero(int line)</td>
+              <td class="desc">Instantiates an <code>EXPR_UNINIT_ZERO</code> node representing uninitialized state from a single <code>0</code> token.</td>
+              <td class="calls">parse_primary</td>
+            </tr>
+            <tr>
+              <td class="sig">Expr *expr_create_number(double val, bool is_zz, int line)</td>
+              <td class="desc">Instantiates an <code>EXPR_NUMBER</code> node, tracking whether the source token was explicitly <code>00</code>.</td>
+              <td class="calls">parse_primary</td>
+            </tr>
+            <tr>
+              <td class="sig">Expr *expr_create_string(const char *str, int line)</td>
+              <td class="desc">Instantiates an <code>EXPR_STRING</code> node with heap-duplicated string content.</td>
+              <td class="calls">parse_primary</td>
+            </tr>
+            <tr>
+              <td class="sig">Expr *expr_create_var(const char *name, int line)</td>
+              <td class="desc">Instantiates an <code>EXPR_VAR</code> node referencing a variable by identifier.</td>
+              <td class="calls">parse_primary</td>
+            </tr>
+            <tr>
+              <td class="sig">Expr *expr_create_binary(int op, Expr *l, Expr *r, int line)</td>
+              <td class="desc">Constructs a binary expression node (<code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, or assignment <code>=</code>).</td>
+              <td class="calls">parse_additive, parse_multiplicative</td>
+            </tr>
+            <tr>
+              <td class="sig">Expr *expr_create_read(const char *target, int line)</td>
+              <td class="desc">Instantiates an <code>EXPR_READ</code> node targeting an input element for live value retrieval.</td>
+              <td class="calls">parse_primary</td>
+            </tr>
+            <tr>
+              <td class="sig">BobElement *element_create(const char *tag, const char *cid, int line)</td>
+              <td class="desc">Allocates a <code>BobElement</code> node with tag name, optional custom ID, and initializes a dynamic child array.</td>
+              <td class="calls">parse_single_element, parse_element_statement</td>
+            </tr>
+            <tr>
+              <td class="sig">void element_add_child(BobElement *parent, BobElement *child)</td>
+              <td class="desc">Appends a child element pointer to the parent's dynamic child list (Rule C and block nesting).</td>
+              <td class="calls">parse_element_statement, parser.c</td>
+            </tr>
+            <tr>
+              <td class="sig">void element_add_attribute(BobElement *elem, const char *key, const char *val, bool is_bool)</td>
+              <td class="desc">Appends a key-value or boolean HTML attribute to an element node.</td>
+              <td class="calls">parse_attributes</td>
+            </tr>
+            <tr>
+              <td class="sig">Expr *expr_create_js(const char *js_code, int line)</td>
+              <td class="desc">Instantiates an <code>EXPR_JS</code> node holding raw JavaScript expressions evaluated at runtime.</td>
+              <td class="calls">parse_primary</td>
+            </tr>
+            <tr>
+              <td class="sig">Stmt *stmt_create(StmtType type, int line)</td>
+              <td class="desc">Allocates an empty statement node tagged with its statement type and line number.</td>
+              <td class="calls">parser.c</td>
+            </tr>
+            <tr>
+              <td class="sig">Program *program_create(void)</td>
+              <td class="desc">Allocates the root program AST holding the top-level statement sequence.</td>
+              <td class="calls">parser_parse_program</td>
+            </tr>
+            <tr>
+              <td class="sig">void program_add_stmt(Program *prog, Stmt *stmt)</td>
+              <td class="desc">Appends a parsed statement to the program root.</td>
+              <td class="calls">parser_parse_program</td>
+            </tr>
+            <tr>
+              <td class="sig">void expr_free(Expr *expr)</td>
+              <td class="desc">Recursively deallocates expression subtrees and string buffers.</td>
+              <td class="calls">stmt_free, element_free</td>
+            </tr>
+            <tr>
+              <td class="sig">void element_free(BobElement *elem)</td>
+              <td class="desc">Recursively frees an element, its custom and auto IDs, content, styling, and all nested child elements.</td>
+              <td class="calls">stmt_free</td>
+            </tr>
+            <tr>
+              <td class="sig">void stmt_free(Stmt *stmt)</td>
+              <td class="desc">Deallocates statement union fields, conditional branches, and event listener instruction bodies.</td>
+              <td class="calls">program_free</td>
+            </tr>
+            <tr>
+              <td class="sig">void program_free(Program *prog)</td>
+              <td class="desc">Deallocates all statements and releases the program root container.</td>
+              <td class="calls">main.c</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- File 4: parser.h & parser.c -->
+      <div class="module-block">
+        <div class="module-header">
+          <span class="module-title">src/parser.h & src/parser.c</span>
+          <span class="module-role">Recursive-Descent Parser & Context Disambiguator</span>
+        </div>
+        <p>
+          Parses the token stream into AST representations, disambiguates the single <code>=</code> operator based on grammatical context, parses comma-separated child declarations for Rule C, and handles block scopes.
+        </p>
+
+        <h4>Structures</h4>
+        <ul>
+          <li><code>BlockFrame</code>: Tracks nesting stack frames (<code>BLOCK_IF</code>, <code>BLOCK_WHEN</code>, <code>BLOCK_ELEMENT</code>) and parent pointers to support arbitrary depth block nesting (<code>make--> ... &lt;--</code>).</li>
+          <li><code>Parser</code>: Contains lexer pointer, current token, lookahead peek token, persistent metadata registry reference, ID generator instance, block depth stack (<code>BlockFrame block_stack[64]</code>), and error state tracking.</li>
+        </ul>
+
+        <h4>Function Directory</h4>
+        <table class="func-table">
+          <thead>
+            <tr>
+              <th>Signature</th>
+              <th>Description</th>
+              <th>Called By</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="sig">Parser *parser_create(Lexer *l, MetadataRegistry *m, IdGenerator *g)</td>
+              <td class="desc">Initializes the parser and primes both <code>current</code> and <code>peek</code> tokens.</td>
+              <td class="calls">main.c</td>
+            </tr>
+            <tr>
+              <td class="sig">Program *parser_parse_program(Parser *p)</td>
+              <td class="desc">Top-level driver loop parsing statements until <code>TOKEN_EOF</code> is encountered.</td>
+              <td class="calls">main.c</td>
+            </tr>
+            <tr>
+              <td class="sig">static Stmt *parse_statement(Parser *p)</td>
+              <td class="desc">Discriminates statements by leading tokens (variable assignment, page styling, ID configuration, element creation/mutation, commands, conditionals, event listeners).</td>
+              <td class="calls">parser_parse_program, parse_block_body</td>
+            </tr>
+            <tr>
+              <td class="sig">static Stmt *parse_element_statement(Parser *p)</td>
+              <td class="desc">Parses top-level element declarations. Checks if child declarations follow the colon, executing the Rule C comma-separated child loop.</td>
+              <td class="calls">parse_statement</td>
+            </tr>
+            <tr>
+              <td class="sig">static BobElement *parse_single_element(Parser *p)</td>
+              <td class="desc">Parses an individual child element node within an inline parent declaration, invoking ID generation if custom ID is omitted.</td>
+              <td class="calls">parse_element_statement</td>
+            </tr>
+            <tr>
+              <td class="sig">static bool looks_like_element_start(Parser *p)</td>
+              <td class="desc">Looks ahead past the colon to distinguish direct text content from child element declarations.</td>
+              <td class="calls">parse_element_statement</td>
+            </tr>
+            <tr>
+              <td class="sig">static void parse_content_modifiers(Parser *p, StyleModifiers *s)</td>
+              <td class="desc">Parses non-strict modifier sequences (hex colors, background, rem sizes, font names, bold, italic, hide) until a delimiter is encountered.</td>
+              <td class="calls">parse_single_element, parse_element_statement</td>
+            </tr>
+            <tr>
+              <td class="sig">static Expr *parse_expression(Parser *p)</td>
+              <td class="desc">Parses assignment expressions and equality comparisons using precedence climbing.</td>
+              <td class="calls">parse_statement, parse_if_stmt</td>
+            </tr>
+            <tr>
+              <td class="sig">static Expr *parse_additive(Parser *p)</td>
+              <td class="desc">Parses addition and subtraction expressions.</td>
+              <td class="calls">parse_expression</td>
+            </tr>
+            <tr>
+              <td class="sig">static Expr *parse_multiplicative(Parser *p)</td>
+              <td class="desc">Parses multiplication and division expressions.</td>
+              <td class="calls">parse_additive</td>
+            </tr>
+            <tr>
+              <td class="sig">static Expr *parse_primary(Parser *p)</td>
+              <td class="desc">Parses literals (0 vs 00, strings, numbers), variables, parentheses, and <code>read &lt;target&gt;</code> expressions.</td>
+              <td class="calls">parse_multiplicative</td>
+            </tr>
+            <tr>
+              <td class="sig">static Stmt *parse_if_stmt(Parser *p)</td>
+              <td class="desc">Parses <code>if &lt;cond&gt; make--></code> blocks, zero or more <code>or else if</code> branches, optional <code>or else--></code> blocks, and the closing <code>&lt;--</code> marker.</td>
+              <td class="calls">parse_statement</td>
+            </tr>
+            <tr>
+              <td class="sig">static Stmt *parse_when_click(Parser *p)</td>
+              <td class="desc">Parses <code>when click(&lt;target&gt;) make--></code> blocks, registering implicit <code>this</code> event target scope.</td>
+              <td class="calls">parse_statement</td>
+            </tr>
+            <tr>
+              <td class="sig">static void parse_block_body(Parser *p, Stmt ***out, size_t *cnt)</td>
+              <td class="desc">Parses statements within an arrow block until encountering branch or closing markers.</td>
+              <td class="calls">parse_if_stmt, parse_when_click</td>
+            </tr>
+            <tr>
+              <td class="sig">static Stmt *parse_smooth(Parser *p)</td>
+              <td class="desc">Parses transition directives formatted as <code>smooth text -> &lt;target&gt; &lt;duration&gt;</code>.</td>
+              <td class="calls">parse_statement</td>
+            </tr>
+            <tr>
+              <td class="sig">static Stmt *parse_id_config(Parser *p)</td>
+              <td class="desc">Parses prefix and suffix configurations like <code>id .org</code> or <code>id / /</code>.</td>
+              <td class="calls">parse_statement</td>
+            </tr>
+            <tr>
+              <td class="sig">static void parse_attributes(Parser *p, BobElement *elem)</td>
+              <td class="desc">Parses bracketed key-value and boolean attributes <code>[key="val", bool]</code>.</td>
+              <td class="calls">parse_single_element, parse_element_statement</td>
+            </tr>
+            <tr>
+              <td class="sig">static Stmt *parse_class_mutation(Parser *p, int mut_type)</td>
+              <td class="desc">Parses runtime class modifications (<code>add_class</code>, <code>remove_class</code>, <code>toggle_class</code>).</td>
+              <td class="calls">parse_statement</td>
+            </tr>
+            <tr>
+              <td class="sig">static Stmt *parse_js_statement(Parser *p)</td>
+              <td class="desc">Parses inline and multi-line triple-quoted JavaScript statements (<code>js: ...</code>).</td>
+              <td class="calls">parse_statement</td>
+            </tr>
+            <tr>
+              <td class="sig">void parser_free(Parser *parser)</td>
+              <td class="desc">Releases parser memory and internal lookahead token buffers.</td>
+              <td class="calls">main.c</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- File 5: meta.h & meta.c -->
+      <div class="module-block">
+        <div class="module-header">
+          <span class="module-title">src/meta.h & src/meta.c</span>
+          <span class="module-role">Persistent Element Identity & Metadata Engine</span>
+        </div>
+        <p>
+          Maintains the companion <code>.meta</code> file, recording file birth timestamps and assigning element fingerprints that survive source edits.
+        </p>
+
+        <h4>Structures</h4>
+        <ul>
+          <li><code>ElementMeta</code>: Holds <code>char *fingerprint</code>, <code>uint64_t birth_timestamp</code>, and <code>uint32_t stable_octal</code> (the permanent middle three octal digits).</li>
+          <li><code>MetadataRegistry</code>: Stores <code>char *filepath</code>, <code>uint64_t file_timestamp</code>, <code>uint32_t file_stable_octal</code> (the permanent first three octal digits), and an array of <code>ElementMeta*</code> entries.</li>
+        </ul>
+
+        <h4>Function Directory</h4>
+        <table class="func-table">
+          <thead>
+            <tr>
+              <th>Signature</th>
+              <th>Description</th>
+              <th>Called By</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="sig">MetadataRegistry *meta_load_or_create(const char *path)</td>
+              <td class="desc">Opens and parses existing <code>&lt;path&gt;.meta</code> file. If missing, captures <code>time(NULL)</code> and derives initial immutable file octals.</td>
+              <td class="calls">main.c</td>
+            </tr>
+            <tr>
+              <td class="sig">ElementMeta *meta_find_or_register_element(MetadataRegistry *m, const char *fp)</td>
+              <td class="desc">Searches existing element registry by structural fingerprint. If not found, creates a new entry with permanent birth timestamp and stable octal.</td>
+              <td class="calls">parse_single_element, parse_element_statement</td>
+            </tr>
+            <tr>
+              <td class="sig">static uint32_t derive_3digit_octal(uint64_t val)</td>
+              <td class="desc">Projects an integer timestamp/hash into a valid 3-digit octal range (<code>0100</code> to <code>0777</code> octal, 64 to 511 decimal).</td>
+              <td class="calls">meta_load_or_create, meta_find_or_register_element</td>
+            </tr>
+            <tr>
+              <td class="sig">static char *get_meta_path(const char *source_path)</td>
+              <td class="desc">Constructs the <code>&lt;source&gt;.meta</code> file path string.</td>
+              <td class="calls">meta_load_or_create</td>
+            </tr>
+            <tr>
+              <td class="sig">void meta_save(MetadataRegistry *meta)</td>
+              <td class="desc">Writes the complete registry out to disk in plain-text format, persisting file and element identity information.</td>
+              <td class="calls">main.c</td>
+            </tr>
+            <tr>
+              <td class="sig">void meta_free(MetadataRegistry *meta)</td>
+              <td class="desc">Releases all element metadata records and the registry struct.</td>
+              <td class="calls">main.c</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- File 6: id_gen.h & id_gen.c -->
+      <div class="module-block">
+        <div class="module-header">
+          <span class="module-title">src/id_gen.h & src/id_gen.c</span>
+          <span class="module-role">Monte Carlo ID Scrambling Engine</span>
+        </div>
+        <p>
+          Implements the three ID identity rules and the Monte Carlo character permutation pipeline, ensuring uniqueness within the document while maintaining file and element invariants.
+        </p>
+
+        <h4>Structures</h4>
+        <ul>
+          <li><code>IdGenerator</code>: Stores active prefix (default <code>"bob"</code>), suffix (default <code>".com"</code>), and an in-memory document collision registry <code>char **generated_ids</code>.</li>
+        </ul>
+
+        <h4>Function Directory</h4>
+        <table class="func-table">
+          <thead>
+            <tr>
+              <th>Signature</th>
+              <th>Description</th>
+              <th>Called By</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="sig">IdGenerator *id_gen_create(void)</td>
+              <td class="desc">Allocates the generator with default prefix <code>bob</code> and suffix <code>.com</code>, seeding <code>srand()</code>.</td>
+              <td class="calls">main.c</td>
+            </tr>
+            <tr>
+              <td class="sig">void id_gen_set_config(IdGenerator *gen, const char *pre, const char *suf)</td>
+              <td class="desc">Updates ID formatting prefixes and suffixes based on top-level <code>id</code> commands.</td>
+              <td class="calls">parse_id_config</td>
+            </tr>
+            <tr>
+              <td class="sig">char *id_gen_generate(IdGenerator *g, MetadataRegistry *m, ElementMeta *e)</td>
+              <td class="desc">Builds the complete ID. Combines the stable file 3 octal digits and stable element 3 octal digits with randomized scrambled octal segments. Enforces collision rejection.</td>
+              <td class="calls">parse_single_element, parse_element_statement</td>
+            </tr>
+            <tr>
+              <td class="sig">static void scramble_hex(char *hex_str, size_t len)</td>
+              <td class="desc">Performs a Fisher-Yates character permutation over a hexadecimal string, preserving character counts while randomizing positions.</td>
+              <td class="calls">generate_scrambled_octal_block</td>
+            </tr>
+            <tr>
+              <td class="sig">static uint32_t generate_scrambled_octal_block(uint64_t seed)</td>
+              <td class="desc">Converts pseudo-random seed into a 6-digit hex string, permutes the characters, and maps the result to a 6-digit octal block.</td>
+              <td class="calls">id_gen_generate</td>
+            </tr>
+            <tr>
+              <td class="sig">static bool id_exists(IdGenerator *gen, const char *id)</td>
+              <td class="desc">Checks whether a generated ID has already been issued within the current document pass.</td>
+              <td class="calls">id_gen_generate</td>
+            </tr>
+            <tr>
+              <td class="sig">static void register_id(IdGenerator *gen, const char *id)</td>
+              <td class="desc">Adds a freshly confirmed ID to the document collision prevention table.</td>
+              <td class="calls">id_gen_generate</td>
+            </tr>
+            <tr>
+              <td class="sig">void id_gen_free(IdGenerator *gen)</td>
+              <td class="desc">Frees registered ID history buffers and configuration strings.</td>
+              <td class="calls">main.c</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- File 7: codegen.h & codegen.c -->
+      <div class="module-block">
+        <div class="module-header">
+          <span class="module-title">src/codegen.h & src/codegen.c</span>
+          <span class="module-role">Multi-Target Code Generator & Runtime Weaver</span>
+        </div>
+        <p>
+          Emits browser-ready HTML markup, scoped CSS stylesheets with smooth transition declarations, and the self-contained JavaScript runtime.
+        </p>
+
+        <h4>Structures</h4>
+        <ul>
+          <li><code>CodegenOptions</code>: Holds flags for single-file mode versus split-files mode and destination file paths.</li>
+        </ul>
+
+        <h4>Function Directory</h4>
+        <table class="func-table">
+          <thead>
+            <tr>
+              <th>Signature</th>
+              <th>Description</th>
+              <th>Called By</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="sig">bool codegen_generate(Program *prog, const CodegenOptions *opts)</td>
+              <td class="desc">Coordinates the code emission pass. Emits base reset styles, walks the AST to generate HTML elements, emits scoped CSS rules, weaves the runtime, and writes output files.</td>
+              <td class="calls">main.c</td>
+            </tr>
+            <tr>
+              <td class="sig">static void generate_element_html(StringBuilder *sb, BobElement *e, int d)</td>
+              <td class="desc">Recursively converts element nodes into HTML tags. Emits bracketed attributes, self-closing SVG tags with auto xmlns injection, and pre-wrap escaped multi-line strings.</td>
+              <td class="calls">codegen_generate</td>
+            </tr>
+            <tr>
+              <td class="sig">static void generate_element_css(StringBuilder *sb, BobElement *e)</td>
+              <td class="desc">Recursively generates scoped CSS rules for elements possessing custom or automatic IDs, including table reset styling and class selectors.</td>
+              <td class="calls">codegen_generate</td>
+            </tr>
+            <tr>
+              <td class="sig">static void emit_style_rules(StringBuilder *sb, const char *sel, const StyleModifiers *s)</td>
+              <td class="desc">Emits CSS rules for alignment, colors, background, font families, rem sizes, bold, italic, and display properties.</td>
+              <td class="calls">generate_element_css, codegen_generate</td>
+            </tr>
+            <tr>
+              <td class="sig">static void emit_js_stmt(StringBuilder *sb, Stmt *stmt, int indent)</td>
+              <td class="desc">Translates AST statements into JavaScript code. Weaves <code>__bob_resolve</code>, <code>__bob_add_class</code>, <code>__bob_remove_class</code>, and <code>__bob_toggle_class</code> runtime helpers, plus raw JS blocks.</td>
+              <td class="calls">codegen_generate, emit_js_stmt</td>
+            </tr>
+            <tr>
+              <td class="sig">static void emit_js_expr(StringBuilder *sb, Expr *expr, bool in_cond)</td>
+              <td class="desc">Translates expressions into JavaScript syntax, mapping single <code>=</code> to <code>===</code> within conditions and to <code>=</code> elsewhere.</td>
+              <td class="calls">emit_js_stmt, emit_js_expr</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- File 8: main.c -->
+      <div class="module-block">
+        <div class="module-header">
+          <span class="module-title">src/main.c</span>
+          <span class="module-role">CLI Driver & Compilation Pipeline Orchestrator</span>
+        </div>
+        <p>
+          Parses command-line arguments, reads input source files into memory, instantiates the compiler subsystems, executes the translation pipeline, and saves persistent metadata.
+        </p>
+
+        <h4>Function Directory</h4>
+        <table class="func-table">
+          <thead>
+            <tr>
+              <th>Signature</th>
+              <th>Description</th>
+              <th>Called By</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="sig">int main(int argc, char **argv)</td>
+              <td class="desc">Entry point. Coordinates arguments (<code>-o</code>, <code>--split</code>, <code>-v</code>), reads source, initializes metadata and lexer, executes parsing, generates code, and saves metadata.</td>
+              <td class="calls">Operating System</td>
+            </tr>
+            <tr>
+              <td class="sig">static char *read_entire_file(const char *path)</td>
+              <td class="desc">Reads an entire source file from disk into a null-terminated heap buffer using binary mode.</td>
+              <td class="calls">main</td>
+            </tr>
+            <tr>
+              <td class="sig">static void print_usage(const char *prog_name)</td>
+              <td class="desc">Outputs command-line options and usage syntax to stdout.</td>
+              <td class="calls">main</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>Memory Lifecycle and Ownership Architecture</h2>
+      <p>
+        The Bob compiler enforces a clean allocation ownership hierarchy to ensure zero leaks across compilation:
+      </p>
+      <ul>
+        <li><strong>Source Buffer:</strong> Read once by <code>main.c</code>, retained as read-only buffer by the lexer, and freed at the conclusion of <code>main</code>.</li>
+        <li><strong>Token Life:</strong> Tokens are created by <code>lexer_next_token</code> with allocated text strings. The parser immediately takes ownership and frees consumed tokens via <code>token_free</code>.</li>
+        <li><strong>AST Ownership:</strong> Nodes created by <code>expr_create_*</code>, <code>element_create</code>, and <code>stmt_create</code> are owned by their enclosing parent nodes. Calling <code>program_free(prog)</code> recursively frees all AST nodes and string properties.</li>
+        <li><strong>Metadata Lifecycle:</strong> The <code>MetadataRegistry</code> lives throughout the compilation pass and is written to disk via <code>meta_save</code> before being freed by <code>meta_free</code>.</li>
+      </ul>
+    </section>
+
+    <footer>
+      <span>Bob Compiler Documentation</span>
+      <span>ISO C11 Technical Reference</span>
+    </footer>
+
+  </article>
+
+  <script>
+    const toggle = document.getElementById('themeToggle');
+    const sunIcon = document.getElementById('sunIcon');
+    const moonIcon = document.getElementById('moonIcon');
+
+    function applyTheme(isDark) {
+      if (isDark) {
+        document.documentElement.classList.add('dark');
+        sunIcon.style.display = 'block';
+        moonIcon.style.display = 'none';
+      } else {
+        document.documentElement.classList.remove('dark');
+        sunIcon.style.display = 'none';
+        moonIcon.style.display = 'block';
+      }
+    }
+
+    const saved = localStorage.getItem('bob-theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const initialDark = saved ? saved === 'dark' : prefersDark;
+    applyTheme(initialDark);
+
+    toggle.addEventListener('click', () => {
+      const isDark = document.documentElement.classList.toggle('dark');
+      localStorage.setItem('bob-theme', isDark ? 'dark' : 'light');
+      applyTheme(isDark);
+    });
+  </script>
+</body>
+</html>

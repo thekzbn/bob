@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bob Application</title>
+  <style>
+/* Bob Generated CSS */
+* { box-sizing: border-box; }
+body {
+    margin: 0;
+    padding: 2rem;
+    font-family: sans-serif;
+}
+button, input { padding: 0.5rem 1rem; margin: 0.5rem; border-radius: 4px; border: 1px solid #ccc; font-size: 1rem; cursor: pointer; }
+input { cursor: text; }
+body {
+    color: #eaeaea;
+    background-color: #1a1a24;
+    font-family: 'Inter', sans-serif;
+}
+#card {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+#bob_501100_1141070_1657047.com {
+    color: #f5f5dc;
+    font-size: 2.00rem;
+}
+#bob_501546_2040402_1463140.com {
+}
+#clicker {
+    background-color: #d4af37;
+    font-size: 1.00rem;
+}
+#bob_501173_730327_2526513.com {
+}
+
+  </style>
+</head>
+<body>
+    <div id="card">
+      <h1 id="bob_501100_1141070_1657047.com">Bob Component</h1>
+      <a id="bob_501546_2040402_1463140.com" href="#">Visit Bob Lang</a>
+      <button id="clicker">Click me</button>
+    </div>
+    <button id="bob_501173_730327_2526513.com">Outside the div</button>
+
+  <script>
+/* Bob Generated JavaScript Runtime */
+"use strict";
+
+function __bob_get(selector, evt) {
+    if (evt && evt.currentTarget) {
+        if (evt.currentTarget.id === selector || evt.currentTarget.tagName.toLowerCase() === selector.toLowerCase()) {
+            return [evt.currentTarget];
+        }
+    }
+    // Check exclusion selector like h4!cars
+    if (selector.includes('!')) {
+        let [tag, excl] = selector.split('!');
+        return Array.from(document.querySelectorAll(tag || '*')).filter(el => !el.classList.contains(excl) && el.tagName.toLowerCase() !== excl.toLowerCase() && el.id !== excl);
+    }
+    let el = document.getElementById(selector);
+    if (el) return [el];
+    return Array.from(document.querySelectorAll(selector));
+}
+
+function __bob_read(selector, evt) {
+    let list = __bob_get(selector, evt);
+    if (list.length > 0) return list[0].value !== undefined ? list[0].value : (list[0].textContent || '');
+    return '';
+}
+
+function __bob_update(selector, val, evt) {
+    let list = __bob_get(selector, evt);
+    list.forEach(el => {
+        if (el.tagName.toLowerCase() === 'input') {
+            el.value = (val === undefined) ? '' : val;
+        } else {
+            el.textContent = (val === undefined) ? '' : val;
+        }
+    });
+}
+
+function __bob_show(selector, evt) {
+    let list = __bob_get(selector, evt);
+    list.forEach(el => { el.style.display = ''; });
+}
+
+function __bob_hide(selector, evt) {
+    let list = __bob_get(selector, evt);
+    list.forEach(el => { el.style.display = 'none'; });
+}
+
+function __bob_bind_click(target, handler) {
+    let targets = __bob_get(target, null);
+    targets.forEach(el => {
+        el.addEventListener('click', handler);
+    });
+}
+
+// State Variables
+
+window.addEventListener('DOMContentLoaded', function() {
+    const _event = null;
+    __bob_bind_click("clicker", function(_event) {
+        __bob_update("clicker", "Clicked inside card!", _event);
+    });
+});
+
+  </script>
+</body>
+</html>

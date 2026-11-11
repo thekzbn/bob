@@ -1,0 +1,12 @@
+# Bob Persistent Element Identity Metadata
+file_timestamp:1794437384
+file_octal:255
+elements_count:2
+[element]
+fingerprint:h1::elem_0
+birth_timestamp:1794437384
+stable_octal:754
+[element]
+fingerprint:p::elem_1
+birth_timestamp:1794437391
+stable_octal:523

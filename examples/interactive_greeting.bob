@@ -1,0 +1,36 @@
+// Bob Interactive Greeting Showcase
+// This tests variables, uninitialized vs 00, styling, inputs, buttons,
+// smooth transitions, read, show/hide, conditionals, and click events.
+
+visitor_name = 0
+is_input_open = 00
+
+page: bg #0b2e1e #f5f5dc 'Inter'
+
+center h1(greeting): "Hello, stranger." #f5f5dc 2.5
+center tell(subtext): "Tell me your name so I can greet you properly." #f5f5dc 1.1
+
+center input(name_box): "Enter your name..." #0b2e1e bg #f5f5dc 1.0 hide
+center button(hello_btn): "Say hello" #0b2e1e bg #d4af37 1.1
+
+smooth text -> greeting 0.4
+
+when click(hello_btn) make-->
+    if is_input_open = 00 make-->
+        show name_box
+        hello_btn: "Confirm"
+        is_input_open = 1
+    or else-->
+        visitor_name = read name_box
+
+        if visitor_name = "" make-->
+            greeting: "Hello, stranger."
+        or else-->
+            greeting: "Hello, " + visitor_name + "."
+        <--
+
+        hide name_box
+        hello_btn: "Say hello"
+        is_input_open = 00
+    <--
+<--

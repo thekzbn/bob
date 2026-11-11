@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bob Application</title>
+  <style>
+/* Bob Generated CSS */
+* { box-sizing: border-box; }
+body {
+    margin: 0;
+    padding: 2rem;
+    font-family: sans-serif;
+}
+button, input { padding: 0.5rem 1rem; margin: 0.5rem; border-radius: 4px; border: 1px solid #ccc; font-size: 1rem; cursor: pointer; }
+input { cursor: text; }
+table { border-collapse: collapse; margin: 1rem 0; width: 100%; }
+th, td { border: 1px solid #ccc; padding: 0.5rem 0.75rem; text-align: left; }
+#bob_751627_755054_1731455.com {
+}
+#bob_751627_755054_1731455.com {
+    white-space: pre-wrap;
+}
+#bob_751457_1302150_1014167.com {
+}
+#bob_751705_3031570_2406433.com {
+}
+#bob_751267_3001767_2114156.com {
+}
+#bob_751375_1617551_370045.com {
+}
+#bob_751631_661340_1436731.com {
+}
+#bob_751533_703130_1347126.com {
+}
+#bob_751523_554634_1357677.com {
+}
+#bob_751321_2152376_2237756.com {
+}
+#bob_751361_1564530_2257040.com {
+}
+#bob_751206_755111_1234761.com {
+}
+#bob_751214_2224046_1577363.com {
+}
+#bob_751204_1712254_2024217.com {
+}
+#bob_751260_1603153_1206673.com {
+}
+#bob_751266_2374631_2253601.com {
+}
+#bob_751227_311053_2031231.com {
+}
+#bob_751516_2741305_416232.com {
+}
+#bob_751345_462721_2163151.com {
+}
+#toyota_id {
+}
+.card {
+    background-color: #ffffff;
+}
+.featured {
+    font-weight: bold;
+}
+#bob_751355_1406107_2112063.com {
+}
+#bob_751670_457351_2157051.com {
+}
+#bob_751212_2171015_2752534.com {
+}
+#bob_751510_2406562_1724131.com {
+}
+#bob_751644_2656575_1020523.com {
+}
+#bob_751435_673474_2313035.com {
+}
+#bob_751366_1715026_2466307.com {
+}
+
+  </style>
+</head>
+<body>
+    <p id="bob_751627_755054_1731455.com">
+This is a long paragraph.
+
+This is another paragraph.
+It contains "quotes" and multiple lines.
+</p>
+    <svg xmlns="http://www.w3.org/2000/svg" id="bob_751457_1302150_1014167.com" viewBox="0 0 100 100" width="100" height="100">
+      <circle id="bob_751705_3031570_2406433.com" cx="50" cy="50" r="40" fill="#1e90ff" />
+    </svg>
+    <table id="bob_751267_3001767_2114156.com">
+      <thead id="bob_751375_1617551_370045.com">
+        <tr id="bob_751631_661340_1436731.com">
+          <th id="bob_751533_703130_1347126.com">Name</th>
+          <th id="bob_751523_554634_1357677.com">Age</th>
+        </tr>
+      </thead>
+      <tbody id="bob_751321_2152376_2237756.com">
+        <tr id="bob_751361_1564530_2257040.com">
+          <td id="bob_751206_755111_1234761.com">John</td>
+          <td id="bob_751214_2224046_1577363.com">21</td>
+        </tr>
+        <tr id="bob_751204_1712254_2024217.com">
+          <td id="bob_751260_1603153_1206673.com">Mary</td>
+          <td id="bob_751266_2374631_2253601.com">19</td>
+        </tr>
+      </tbody>
+    </table>
+    <a id="bob_751227_311053_2031231.com" href="https://example.com" target="_blank" rel="noreferrer">Visit website</a>
+    <input id="bob_751516_2741305_416232.com" type="email" name="email" required aria-label="Email address" />
+    <div id="bob_751345_462721_2163151.com" data-state="open" aria-live="polite">Dynamic status</div>
+    <div id="toyota_id" data-model="corolla">Custom ID with attributes</div>
+    <div id="bob_751355_1406107_2112063.com" class="card featured">Styled via class selector</div>
+    <article id="bob_751670_457351_2157051.com">
+      <section id="bob_751212_2171015_2752534.com">
+        <h1 id="bob_751510_2406562_1724131.com">A title</h1>
+        <div id="bob_751644_2656575_1020523.com">
+          <p id="bob_751435_673474_2313035.com">A deeply nested paragraph</p>
+          <a id="bob_751366_1715026_2466307.com" href="https://example.com" target="_blank">Visit</a>
+        </div>
+      </section>
+    </article>
+
+  <script>
+/* Bob Generated JavaScript Runtime */
+"use strict";
+
+function __bob_get(selector, evt) {
+    if (evt && evt.currentTarget) {
+        if (evt.currentTarget.id === selector || evt.currentTarget.tagName.toLowerCase() === selector.toLowerCase()) {
+            return [evt.currentTarget];
+        }
+    }
+    if (selector.includes('!')) {
+        let [tag, excl] = selector.split('!');
+        return Array.from(document.querySelectorAll(tag || '*')).filter(el => !el.classList.contains(excl) && el.tagName.toLowerCase() !== excl.toLowerCase() && el.id !== excl);
+    }
+    let el = document.getElementById(selector);
+    if (el) return [el];
+    return Array.from(document.querySelectorAll(selector));
+}
+
+function __bob_resolve(selector, evt) {
+    if (selector === "root" || selector === "document" || selector === "html") {
+        return [document.documentElement];
+    }
+    return __bob_get(selector, evt);
+}
+
+function __bob_read(selector, evt) {
+    let list = __bob_get(selector, evt);
+    if (list.length > 0) return list[0].value !== undefined ? list[0].value : (list[0].textContent || '');
+    return '';
+}
+
+function __bob_update(selector, val, evt) {
+    let list = __bob_get(selector, evt);
+    list.forEach(el => {
+        if (el.tagName.toLowerCase() === 'input') {
+            el.value = (val === undefined) ? '' : val;
+        } else {
+            el.textContent = (val === undefined) ? '' : val;
+        }
+    });
+}
+
+function __bob_show(selector, evt) {
+    let list = __bob_get(selector, evt);
+    list.forEach(el => { el.style.display = ''; });
+}
+
+function __bob_hide(selector, evt) {
+    let list = __bob_get(selector, evt);
+    list.forEach(el => { el.style.display = 'none'; });
+}
+
+function __bob_add_class(selector, cls, evt) {
+    let list = __bob_resolve(selector, evt);
+    list.forEach(el => el.classList.add(cls));
+}
+
+function __bob_remove_class(selector, cls, evt) {
+    let list = __bob_resolve(selector, evt);
+    list.forEach(el => el.classList.remove(cls));
+}
+
+function __bob_toggle_class(selector, cls, evt) {
+    let list = __bob_resolve(selector, evt);
+    list.forEach(el => el.classList.toggle(cls));
+}
+
+function __bob_bind_click(target, handler) {
+    let targets = __bob_get(target, null);
+    targets.forEach(el => {
+        el.addEventListener('click', handler);
+    });
+}
+
+// State Variables
+let saved_theme = (localStorage.getItem("theme"));
+
+window.addEventListener('DOMContentLoaded', function() {
+    const _event = null;
+    __bob_add_class("toyota_id", "active", _event);
+    __bob_remove_class("toyota_id", "legacy", _event);
+    __bob_toggle_class("root", "dark", _event);
+    localStorage.setItem("bob_runtime","active")
+    
+console.log("Multi-line JS block executed successfully");
+
+});
+
+  </script>
+</body>
+</html>

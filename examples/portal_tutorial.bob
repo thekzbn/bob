@@ -1,0 +1,34 @@
+// 1. Declare state variables
+visitor_name = 0
+is_active = 00
+
+// 2. Set global theme
+page: bg #0b2e1e #f5f5dc 'Inter'
+
+// 3. Declare a nested card using Rule C
+center div(card): h1: "Bob Portal" #f5f5dc 2.2, tell: "Enter your handle to register." 1.0
+
+// 4. Declare interactive controls
+center input(handle_input): "Your username..." #0b2e1e bg #f5f5dc 1.0 hide
+center button(action_btn): "Get Started" #0b2e1e bg #d4af37 1.1
+
+// 5. Smooth animation vector
+smooth text -> card 0.4
+
+// 6. Reactive event handler
+when click(action_btn) make-->
+    if is_active = 00 make-->
+        show handle_input
+        action_btn: "Confirm Username"
+        is_active = 1
+    or else-->
+        visitor_name = read handle_input
+        if visitor_name = "" make-->
+            card: "Please provide a valid name!"
+        or else-->
+            card: "Welcome aboard, " + visitor_name + "!"
+            hide handle_input
+            hide action_btn
+        <--
+    <--
+<--

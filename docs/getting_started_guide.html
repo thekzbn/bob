@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Getting Started with Bob: Guide & Reference</title>
+  <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #fcfbf8;
+      --surface: #ffffff;
+      --text: #171717;
+      --muted: #5e5950;
+      --border: #e5e2da;
+      --accent: #1e90ff;
+      --accent-soft: rgba(30, 144, 255, 0.12);
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', Consolas, Monaco, monospace;
+      --duration: 180ms;
+      --ease: cubic-bezier(0.57, -0.01, 0.21, 0.89);
+    }
+
+    html.dark {
+      --bg: #0e0d0c;
+      --surface: #141312;
+      --text: #f0ede6;
+      --muted: #8a857d;
+      --border: #262422;
+      --accent: #1e90ff;
+      --accent-soft: rgba(30, 144, 255, 0.16);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      font-family: var(--font-sans);
+      background-color: var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      min-height: 100vh;
+      transition: background-color var(--duration) var(--ease), color var(--duration) var(--ease);
+    }
+
+    ::selection {
+      color: #1e90ff !important;
+      background: rgba(30, 144, 255, 0.18) !important;
+    }
+
+    /* Content Layout */
+    .article-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 4.5rem 1.5rem 7rem;
+    }
+
+    /* Header Row (Integrated, No Topnav) */
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 2rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: -0.01em;
+      text-decoration: none;
+    }
+
+    .brand-title span {
+      color: var(--accent);
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      margin-left: 0.35rem;
+    }
+
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+    }
+
+    .doc-nav-link {
+      font-size: 0.85rem;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color var(--duration) var(--ease);
+    }
+
+    .doc-nav-link:hover, .doc-nav-link.active {
+      color: var(--accent);
+    }
+
+    .theme-toggle {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      width: 28px;
+      height: 28px;
+      border-radius: 4px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: color var(--duration) var(--ease), border-color var(--duration) var(--ease);
+    }
+
+    .theme-toggle:hover {
+      color: var(--text);
+      border-color: var(--accent);
+    }
+
+    header {
+      margin-bottom: 3.5rem;
+    }
+
+    h1 {
+      font-size: 2.35rem;
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      line-height: 1.25;
+      margin-bottom: 1rem;
+      color: var(--text);
+    }
+
+    .lead {
+      font-size: 1.15rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    section {
+      margin-top: 4rem;
+      padding-top: 2.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    h2 {
+      font-size: 1.45rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.15rem;
+      color: var(--text);
+    }
+
+    h3 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      margin-top: 2.25rem;
+      margin-bottom: 0.75rem;
+      color: var(--text);
+    }
+
+    p {
+      font-size: 1.025rem;
+      color: var(--text);
+      margin-bottom: 1.25rem;
+    }
+
+    strong {
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    ul, ol {
+      margin-left: 1.35rem;
+      margin-bottom: 1.35rem;
+      color: var(--text);
+    }
+
+    li {
+      margin-bottom: 0.45rem;
+      font-size: 1.025rem;
+    }
+
+    code {
+      font-family: var(--font-mono);
+      font-size: 0.88em;
+      background-color: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.15rem 0.35rem;
+      border-radius: 4px;
+    }
+
+    pre {
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      background-color: var(--surface);
+      border: 1px solid var(--border);
+      padding: 1.15rem 1.25rem;
+      border-radius: 6px;
+      overflow-x: auto;
+      margin: 1.25rem 0 1.75rem;
+      line-height: 1.6;
+      color: var(--text);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.75rem 0;
+      font-size: 0.9rem;
+    }
+
+    th, td {
+      border: 1px solid var(--border);
+      padding: 0.65rem 0.85rem;
+      text-align: left;
+    }
+
+    th {
+      background-color: var(--surface);
+      font-weight: 600;
+      color: var(--text);
+      font-size: 0.825rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    td {
+      color: var(--text);
+    }
+
+    td.code-col {
+      font-family: var(--font-mono);
+      color: var(--accent);
+    }
+
+    footer {
+      margin-top: 5rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.85rem;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+  </style>
+</head>
+<body>
+
+  <article class="article-container">
+
+    <div class="header-row">
+      <a href="getting_started_guide.html" class="brand-title">Bob <span>Getting Started</span></a>
+      <div class="header-controls">
+        <a href="architecture_and_design_system.html" class="doc-nav-link">Architecture & Files</a>
+        <a href="getting_started_guide.html" class="doc-nav-link active">Getting Started</a>
+        <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme">
+          <svg id="sunIcon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          <svg id="moonIcon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+      </div>
+    </div>
+
+    <header>
+      <h1>Getting Started with Bob</h1>
+      <p class="lead">A walkthrough for compiling the Bob compiler, initializing your first web document, and creating interactive components.</p>
+    </header>
+
+    <section>
+      <h2>Building the Compiler</h2>
+      <p>
+        The Bob compiler (<code>bobc</code>) has zero external dependencies beyond a standard C compiler (GCC or Clang).
+      </p>
+
+      <pre><code>gcc -Wall -Wextra -std=c11 -O2 src/lexer.c src/ast.c src/parser.c src/meta.c src/id_gen.c src/codegen.c src/main.c -o bobc.exe</code></pre>
+
+      <p>
+        Confirm the binary runs:
+      </p>
+      <pre><code>./bobc.exe --version
+# bobc version 0.1.0 (esoteric web compiler)</code></pre>
+    </section>
+
+    <section>
+      <h2>Project Initialization</h2>
+      <p>
+        Bob does not use package managers, configuration files, or build artifacts. A project begins with a single <code>.bob</code> source file:
+      </p>
+
+      <pre><code>mkdir site
+cd site
+touch app.bob</code></pre>
+    </section>
+
+    <section>
+      <h2>A Complete Reactive Document</h2>
+      <p>
+        Here is a functional application written in <code>app.bob</code>. It establishes variables, applies global styling, creates an inline nested structure, registers event listeners, and coordinates transitions:
+      </p>
+
+      <pre><code>// 1. Declare state variables
+visitor_name = 0
+is_active = 00
+
+// 2. Global page styling
+page: bg #0e0d0c #f0ede6 'Inter'
+
+// 3. Inline parent-child nesting (Rule C)
+center div(portal): h1: "Bob Portal" #f0ede6 2.2, tell: "Enter your handle to register." 1.0
+
+// 4. Interactive controls
+center input(handle_input): "Your username..." #0e0d0c bg #f0ede6 1.0 hide
+center button(action_btn): "Get Started" #f0ede6 bg #1e90ff 1.1
+
+// 5. Transition directive
+smooth text -> portal 0.4
+
+// 6. Reactive event listener
+when click(action_btn) make-->
+    if is_active = 00 make-->
+        show handle_input
+        action_btn: "Confirm Username"
+        is_active = 1
+    or else-->
+        visitor_name = read handle_input
+        if visitor_name = "" make-->
+            portal: "Please provide a valid name."
+        or else-->
+            portal: "Welcome aboard, " + visitor_name + "."
+            hide handle_input
+            hide action_btn
+        <--
+    <--
+<--</code></pre>
+    </section>
+
+    <section>
+      <h2>Language Mechanics Explained</h2>
+
+      <h3>1. Variables (0 vs 00)</h3>
+      <p>
+        Bob distinguishes between uninitialized state and numeric zero:
+      </p>
+      <ul>
+        <li><code>visitor_name = 0</code> sets the variable to uninitialized (compiled to <code>undefined</code>).</li>
+        <li><code>is_active = 00</code> explicitly sets the variable to numeric <code>0</code>.</li>
+      </ul>
+
+      <h3>2. Anatomy of the Colon</h3>
+      <p>
+        In <code>center div(portal): ...</code>, the colon acts as a spatial boundary:
+      </p>
+      <ul>
+        <li>Tokens to the left of the colon configure the container (such as <code>center</code> layout).</li>
+        <li>Tokens to the right of the colon define content, text colors, background colors, and typography.</li>
+      </ul>
+
+      <h3>3. Rule C: Inline Child Nesting</h3>
+      <p>
+        The comma separates direct children within a parent:
+      </p>
+      <pre><code>center div(portal): h1: "Bob Portal", tell: "Subtitle"</code></pre>
+      <p>
+        The line boundary terminates the parent element. Elements declared on the subsequent line are siblings outside the container.
+      </p>
+
+      <h3>4. Implicit Event Target</h3>
+      <p>
+        Within <code>when click(action_btn) make--></code>, referencing <code>action_btn: "Confirm Username"</code> modifies only the clicked button via <code>event.currentTarget</code>.
+      </p>
+
+      <h3>5. Triple-Quoted Strings</h3>
+      <p>
+        Multi-line text blocks preserve raw newlines and spaces using <code>""" ... """</code> without interpreting internal Bob keywords:
+      </p>
+      <pre><code>tell: """
+First line of article.
+Second line with literal code: car = 5
+"""</code></pre>
+
+      <h3>6. General Attributes & CSS Classes</h3>
+      <p>
+        Assign arbitrary HTML attributes in square brackets and manage CSS classes dynamically:
+      </p>
+      <pre><code>a[href="https://example.com", target="_blank"]: "Visit Site" #1e90ff
+.panel: bg #111115 #f5f5dc 'Inter'
+when click(theme_btn) make-->
+    toggle_class root "dark"
+<--</code></pre>
+
+      <h3>7. Arbitrary Depth Blocks & JS Interoperability</h3>
+      <p>
+        Nest elements to any depth using <code>tag make--> ... <--</code> and integrate with browser APIs:
+      </p>
+      <pre><code>article make-->
+    section make-->
+        h1: "Deeply Nested"
+    <--
+<--
+theme = js localStorage.getItem("theme")
+js: console.time("render")</code></pre>
+    </section>
+
+    <section>
+      <h2>Compilation Targets</h2>
+
+      <h3>Single-File HTML Output (Default)</h3>
+      <p>
+        To produce a standalone HTML file with embedded CSS and runtime:
+      </p>
+      <pre><code>./bobc.exe app.bob -o dist/index.html</code></pre>
+      <p>
+        The generated file requires no server and functions when opened directly from the filesystem.
+      </p>
+
+      <h3>Split-File Output</h3>
+      <p>
+        If separate files are needed for web servers:
+      </p>
+      <pre><code>./bobc.exe app.bob --split dist/</code></pre>
+      <p>
+        This emits <code>dist/index.html</code>, <code>dist/style.css</code>, and <code>dist/script.js</code>.
+      </p>
+    </section>
+
+    <section>
+      <h2>Syntax Quick Reference</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Concept</th>
+            <th>Syntax</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Uninitialized variable</td>
+            <td class="code-col">x = 0</td>
+            <td>Variable without initial value</td>
+          </tr>
+          <tr>
+            <td>Numeric zero</td>
+            <td class="code-col">x = 00</td>
+            <td>Variable with numeric value 0</td>
+          </tr>
+          <tr>
+            <td>Element declaration</td>
+            <td class="code-col">center h1(title): "Text"</td>
+            <td>Creates centered h1 with ID <code>title</code></td>
+          </tr>
+          <tr>
+            <td>Inline child nesting</td>
+            <td class="code-col">div: h1: "A", a: "B"</td>
+            <td>Rule C: Comma separates direct children</td>
+          </tr>
+          <tr>
+            <td>Input placeholder</td>
+            <td class="code-col">input(in): "Placeholder" hide</td>
+            <td>String sets placeholder attribute</td>
+          </tr>
+          <tr>
+            <td>Read input value</td>
+            <td class="code-col">name = read in</td>
+            <td>Retrieves live DOM value</td>
+          </tr>
+          <tr>
+            <td>Visibility controls</td>
+            <td class="code-col">show in / hide in</td>
+            <td>Modifies display state</td>
+          </tr>
+          <tr>
+            <td>Smooth transition</td>
+            <td class="code-col">smooth text -> title 0.4</td>
+            <td>Applies 0.4s CSS transition</td>
+          </tr>
+          <tr>
+            <td>Conditional branch</td>
+            <td class="code-col">if x = 1 make--> ... &lt;--</td>
+            <td>Strict equality evaluation</td>
+          </tr>
+          <tr>
+            <td>Event listener</td>
+            <td class="code-col">when click(btn) make--> ... &lt;--</td>
+            <td>Click binding with implicit this</td>
+          </tr>
+          <tr>
+            <td>Multi-line string</td>
+            <td class="code-col">tell: """ ... """</td>
+            <td>Triple-double-quoted raw literal text</td>
+          </tr>
+          <tr>
+            <td>HTML attributes</td>
+            <td class="code-col">a[href="url", target="_blank"]</td>
+            <td>Square bracket attributes on any element</td>
+          </tr>
+          <tr>
+            <td>Arbitrary nesting</td>
+            <td class="code-col">tag make--> ... &lt;--</td>
+            <td>Deeply nested DOM container blocks</td>
+          </tr>
+          <tr>
+            <td>SVG shapes</td>
+            <td class="code-col">svg make--> circle[...] &lt;--</td>
+            <td>Auto-namespaced SVG vector graphics</td>
+          </tr>
+          <tr>
+            <td>Tables</td>
+            <td class="code-col">table make--> tr: td: "A" &lt;--</td>
+            <td>Structured tables with clean defaults</td>
+          </tr>
+          <tr>
+            <td>Class style & mutation</td>
+            <td class="code-col">.card: ... / toggle_class root "dark"</td>
+            <td>Reusable styling and runtime class management</td>
+          </tr>
+          <tr>
+            <td>JavaScript interop</td>
+            <td class="code-col">x = js localStorage.getItem("k")</td>
+            <td>Direct JS expressions and statement blocks</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <footer>
+      <span>Bob Compiler Documentation</span>
+      <span>C11 Source Target</span>
+    </footer>
+
+  </article>
+
+  <script>
+    const toggle = document.getElementById('themeToggle');
+    const sunIcon = document.getElementById('sunIcon');
+    const moonIcon = document.getElementById('moonIcon');
+
+    function applyTheme(isDark) {
+      if (isDark) {
+        document.documentElement.classList.add('dark');
+        sunIcon.style.display = 'block';
+        moonIcon.style.display = 'none';
+      } else {
+        document.documentElement.classList.remove('dark');
+        sunIcon.style.display = 'none';
+        moonIcon.style.display = 'block';
+      }
+    }
+
+    const saved = localStorage.getItem('bob-theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const initialDark = saved ? saved === 'dark' : prefersDark;
+    applyTheme(initialDark);
+
+    toggle.addEventListener('click', () => {
+      const isDark = document.documentElement.classList.toggle('dark');
+      localStorage.setItem('bob-theme', isDark ? 'dark' : 'light');
+      applyTheme(isDark);
+    });
+  </script>
+</body>
+</html>

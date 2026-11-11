@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bob Application</title>
+  <style>
+/* Bob Generated CSS */
+* { box-sizing: border-box; }
+body {
+    margin: 0;
+    padding: 2rem;
+    font-family: sans-serif;
+}
+button, input { padding: 0.5rem 1rem; margin: 0.5rem; border-radius: 4px; border: 1px solid #ccc; font-size: 1rem; cursor: pointer; }
+input { cursor: text; }
+body {
+    color: #f5f5dc;
+    background-color: #0b2e1e;
+    font-family: 'Inter', sans-serif;
+}
+#card {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+#bob_255754_2376143_2023160.com {
+    color: #f5f5dc;
+    font-size: 2.20rem;
+}
+#bob_255523_1547230_2767155.com {
+    font-size: 1.00rem;
+}
+#handle_input {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    color: #0b2e1e;
+    background-color: #f5f5dc;
+    font-size: 1.00rem;
+    display: none;
+}
+#action_btn {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    color: #0b2e1e;
+    background-color: #d4af37;
+    font-size: 1.10rem;
+}
+#card, card {
+    transition: all 0.40s ease-in-out;
+}
+
+  </style>
+</head>
+<body>
+    <div id="card">
+      <h1 id="bob_255754_2376143_2023160.com">Bob Portal</h1>
+      <p id="bob_255523_1547230_2767155.com">Enter your handle to register.</p>
+    </div>
+    <input id="handle_input" placeholder="Your username..." />
+    <button id="action_btn">Get Started</button>
+
+  <script>
+/* Bob Generated JavaScript Runtime */
+"use strict";
+
+function __bob_get(selector, evt) {
+    if (evt && evt.currentTarget) {
+        if (evt.currentTarget.id === selector || evt.currentTarget.tagName.toLowerCase() === selector.toLowerCase()) {
+            return [evt.currentTarget];
+        }
+    }
+    // Check exclusion selector like h4!cars
+    if (selector.includes('!')) {
+        let [tag, excl] = selector.split('!');
+        return Array.from(document.querySelectorAll(tag || '*')).filter(el => !el.classList.contains(excl) && el.tagName.toLowerCase() !== excl.toLowerCase() && el.id !== excl);
+    }
+    let el = document.getElementById(selector);
+    if (el) return [el];
+    return Array.from(document.querySelectorAll(selector));
+}
+
+function __bob_read(selector, evt) {
+    let list = __bob_get(selector, evt);
+    if (list.length > 0) return list[0].value !== undefined ? list[0].value : (list[0].textContent || '');
+    return '';
+}
+
+function __bob_update(selector, val, evt) {
+    let list = __bob_get(selector, evt);
+    list.forEach(el => {
+        if (el.tagName.toLowerCase() === 'input') {
+            el.value = (val === undefined) ? '' : val;
+        } else {
+            el.textContent = (val === undefined) ? '' : val;
+        }
+    });
+}
+
+function __bob_show(selector, evt) {
+    let list = __bob_get(selector, evt);
+    list.forEach(el => { el.style.display = ''; });
+}
+
+function __bob_hide(selector, evt) {
+    let list = __bob_get(selector, evt);
+    list.forEach(el => { el.style.display = 'none'; });
+}
+
+function __bob_bind_click(target, handler) {
+    let targets = __bob_get(target, null);
+    targets.forEach(el => {
+        el.addEventListener('click', handler);
+    });
+}
+
+// State Variables
+let visitor_name = undefined;
+let is_active = 0;
+
+window.addEventListener('DOMContentLoaded', function() {
+    const _event = null;
+    __bob_bind_click("action_btn", function(_event) {
+        if ((is_active === 0)) {
+            __bob_show("handle_input", _event);
+            __bob_update("action_btn", "Confirm Username", _event);
+            is_active = 1;
+        } else {
+            visitor_name = __bob_read("handle_input", _event);
+            if ((visitor_name === "")) {
+                __bob_update("card", "Please provide a valid name!", _event);
+            } else {
+                __bob_update("card", (("Welcome aboard, " + visitor_name) + "!"), _event);
+                __bob_hide("handle_input", _event);
+                __bob_hide("action_btn", _event);
+            }
+        }
+    });
+});
+
+  </script>
+</body>
+</html>

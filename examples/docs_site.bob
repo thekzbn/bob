@@ -1,0 +1,28 @@
+// Documentation Site Built in Pure Bob
+// Showcasing global styling, Rule C nesting, buttons, and state
+
+theme_state = 00
+
+page: bg #0e0d0c #f0ede6 'Inter'
+
+center div(header_block): h1: "Bob Language Reference" #f0ede6 2.2, tell: "An experimental esolang for unified web development." 1.1
+
+center div(controls): button(theme_btn): "Toggle Theme" #f0ede6 bg #1e90ff 1.0, a: "Source Code on GitHub" #1e90ff
+
+center div(section_one): h2: "Compiler Pipeline" #1e90ff 1.5, tell: "The C11 compiler converts Bob code directly into HTML, CSS, and JS." 1.0
+center div(section_two): h2: "The 0 vs 00 Rule" #1e90ff 1.5, tell: "0 represents uninitialized state. 00 represents numeric zero." 1.0
+center div(section_three): h2: "Rule C DOM Nesting" #1e90ff 1.5, tell: "Comma-separated children allow declaring trees on a single line." 1.0
+
+smooth text -> header_block 0.3
+
+when click(theme_btn) make-->
+    if theme_state = 00 make-->
+        theme_btn: "Theme: Light Active"
+        header_block: "Bob Documentation (Light Mode)"
+        theme_state = 1
+    or else-->
+        theme_btn: "Theme: Dark Active"
+        header_block: "Bob Language Reference"
+        theme_state = 00
+    <--
+<--

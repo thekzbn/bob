@@ -1,0 +1,59 @@
+// Comprehensive Test of All 7 New Bob Features
+
+// 1. Multi-line Strings
+tell: """
+This is a long paragraph.
+
+This is another paragraph.
+It contains "quotes" and multiple lines.
+"""
+
+// 2. SVG Support with attributes and nested shapes
+svg[viewBox="0 0 100 100", width="100", height="100"] make-->
+    circle[cx="50", cy="50", r="40", fill="#1e90ff"]
+<--
+
+// 3. Tables with nested hierarchy
+table make-->
+    thead make-->
+        tr: th: "Name", th: "Age"
+    <--
+    tbody make-->
+        tr: td: "John", td: "21"
+        tr: td: "Mary", td: "19"
+    <--
+<--
+
+// 4. General HTML attributes (boolean, aria, data, standard)
+a[href="https://example.com", target="_blank", rel="noreferrer"]: "Visit website"
+input[type="email", name="email", required, aria-label="Email address"]
+div[data-state="open", aria-live="polite"]: "Dynamic status"
+div(toyota_id)[data-model="corolla"]: "Custom ID with attributes"
+
+// 5. CSS Classes & Runtime Class Mutations
+.card: bg #ffffff
+.featured: bold
+
+div[class="card featured"]: "Styled via class selector"
+
+add_class toyota_id "active"
+remove_class toyota_id "legacy"
+toggle_class root "dark"
+
+// 6. Deep Nesting with make--> and <--
+article make-->
+    section make-->
+        h1: "A title"
+        div make-->
+            p: "A deeply nested paragraph"
+            a[href="https://example.com", target="_blank"]: "Visit"
+        <--
+    <--
+<--
+
+// 7. Browser Storage & JavaScript Interoperability
+saved_theme = js localStorage.getItem("theme")
+js: localStorage.setItem("bob_runtime", "active")
+js: """
+console.log("Multi-line JS block executed successfully");
+"""
