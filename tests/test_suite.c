@@ -270,6 +270,32 @@ TEST(test_js_interop) {
     id_gen_free(gen);
 }
 
+TEST(test_svg_text_tag_keyword) {
+    const char *src =
+        "svg[viewBox=\"0 0 100 100\"] make-->\n"
+        "    text(label)[x=\"10\", y=\"20\"]: \"Hello\"\n"
+        "<--\n";
+    MetadataRegistry *meta = meta_load_or_create("tests/test_svg_text.bob");
+    IdGenerator *gen = id_gen_create();
+    Lexer *lex = lexer_create(src);
+    Parser *p = parser_create(lex, meta, gen);
+
+    Program *prog = parser_parse_program(p);
+    assert(!p->has_error);
+    assert(prog->count == 1);
+    BobElement *svg = prog->statements[0]->as.elem_create.element;
+    assert(strcmp(svg->tag, "svg") == 0);
+    assert(svg->child_count == 1);
+    assert(strcmp(svg->children[0]->tag, "text") == 0);
+    assert(svg->children[0]->is_svg);
+
+    program_free(prog);
+    parser_free(p);
+    lexer_free(lex);
+    meta_free(meta);
+    id_gen_free(gen);
+}
+
 int main(void) {
     printf("========================================\n");
     printf(" Running Bob Compiler Unit Test Suite\n");
@@ -283,6 +309,7 @@ int main(void) {
     RUN_TEST(test_attributes_and_classes);
     RUN_TEST(test_arbitrary_depth_nesting);
     RUN_TEST(test_js_interop);
+    RUN_TEST(test_svg_text_tag_keyword);
 
     printf("========================================\n");
     printf(" Test Results: %d/%d Passed!\n", tests_passed, tests_run);

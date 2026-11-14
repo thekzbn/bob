@@ -1,0 +1,409 @@
+// Bob: eleven interactive illustrations, authored in Bob and compiled by bobc.
+// Every illustration is inline SVG; the generated page makes no network requests.
+
+page: bg #f2f0e9 #171a35 'Georgia'
+
+header(head)[class="head"] make-->
+    p: "BOB · ILLUSTRATION SET"
+    h1: "Bob, drawn small"
+    p: "Eleven interactive illustrations for the Bob site: a small language that opens a little world with make--> and closes it with <--. Everything here is inline SVG, CSS and JavaScript in one file."
+    nav[aria-label="Illustrations"] make-->
+        a[href="#s1"]: "1 Hero"
+        a[href="#s2"]: "2 Pipeline"
+        a[href="#s3"]: "3 0 / 00"
+        a[href="#s4"]: "4 Architecture"
+        a[href="#s5"]: "5 Getting started"
+        a[href="#s6"]: "6 Nesting"
+        a[href="#s7"]: "7 Click"
+        a[href="#s8"]: "8 Styling"
+        a[href="#s9"]: "9 Output"
+        a[href="#s10"]: "10 Strings"
+        a[href="#s11"]: "11 SVG"
+    <--
+<--
+
+section(s1)[class="f blue", aria-labelledby="h1a"] make-->
+    div[class="in"] make-->
+        div make-->
+            p[class="num"]: "01 · Hero morph"
+            h2(h1a): "One shape, four meanings"
+            p: "make--> opens into a block, <-- closes the frame, and the frame unfolds into a page. Step through the states or replay the full sequence."
+            div[class="row"] make-->
+                button(rp1)[type="button", class="btn go"]: "Replay"
+            <--
+            div(c1)[class="row", role="group", aria-label="Hero states"]
+        <--
+        div[class="stage"] make-->
+            svg(svg1)[viewBox="0 0 400 390", role="img", aria-labelledby="t1 d1"] make-->
+                title(t1): "Arrow, block, back arrow, page"
+                desc(d1): "A single shape morphs from a yellow right arrow into a chunky block with a window, then a coral back arrow, then a white browser page."
+                polygon(p1)
+                g(hole)[class="fade"] make-->
+                    rect[x="120", y="150", width="160", height="100", fill="#2739c7"]
+                <--
+                g(pg)[class="fade on"] make-->
+                    rect[x="50", y="40", width="300", height="38", fill="#18227f"]
+                    circle[cx="72", cy="59", r="7", fill="#e4523b"]
+                    circle[cx="95", cy="59", r="7", fill="#ffc247"]
+                    circle[cx="118", cy="59", r="7", fill="#278765"]
+                    rect[x="80", y="110", width="170", height="22", fill="#e4523b"]
+                    rect[x="80", y="152", width="240", height="10", fill="#d9d7cf"]
+                    rect[x="80", y="174", width="200", height="10", fill="#d9d7cf"]
+                    rect[x="80", y="214", width="110", height="46", fill="#ffc247"]
+                    rect[x="210", y="214", width="110", height="46", fill="#278765"]
+                    rect[x="80", y="280", width="240", height="10", fill="#d9d7cf"]
+                <--
+                text(g1)[x="200", y="372", text-anchor="middle", fill="#fff", font-size="24", font-weight="700"]
+            <--
+        <--
+    <--
+<--
+
+section(s2)[class="f white", aria-labelledby="h2a"] make-->
+    div[class="in"] make-->
+        div make-->
+            p[class="num"]: "02 · Compiler pipeline"
+            h2(h2a): "Five steps from .bob to browser"
+            p: "Pick a step; the shape changes with it."
+            div(c2)[class="steps"]
+            p(cap2)[class="cap", aria-live="polite"]
+        <--
+        div[class="stage"] make-->
+            svg(svg2)[viewBox="0 0 400 350", role="img", aria-labelledby="t2 d2"] make-->
+                title(t2): "Compiler pipeline shapes"
+                desc(d2): "One shape changes for each step: a source sheet, a branching comb for parsing, a stepped stack for generated files, a tray for output, and a tag for metadata."
+                polygon(p2)
+                text(g2)[x="200", y="338", text-anchor="middle", font-size="22", font-weight="700", fill="#171a35"]
+            <--
+        <--
+    <--
+<--
+
+section(s3)[class="f", aria-labelledby="h3a"] make-->
+    div[class="in"] make-->
+        div make-->
+            p[class="num"]: "03 · Zero and double zero"
+            h2(h3a): "0 is not 00"
+            p: "A literal 0 compiles to JavaScript undefined. 00 compiles to the number zero."
+            div(c3)[class="row"]
+            pre(k3)
+        <--
+        div[class="stage"] make-->
+            svg(svg3)[viewBox="0 0 320 250", role="img", aria-labelledby="t3 d3"] make-->
+                title(t3): "Empty ring versus filled ring"
+                desc(d3): "A dashed empty ring labelled undefined for 0, which becomes a solid filled ring labelled 0 for 00."
+                circle(zr)[cx="160", cy="105", r="80", class="z"]
+                text(zt)[x="160", y="114", text-anchor="middle", font-size="26", font-weight="700", fill="#171a35"]
+                text(zl)[x="160", y="238", text-anchor="middle", font-size="15", fill="#5d6078"]
+            <--
+        <--
+    <--
+<--
+
+section(s4)[class="f deep", aria-labelledby="h4a"] make-->
+    div[class="in"] make-->
+        div make-->
+            p[class="num"]: "04 · Compiler architecture"
+            h2(h4a): "Five named parts"
+            p: "One Bob line becomes nested structure, then separate HTML, CSS and JavaScript sheets."
+            div(c4)[class="row"]
+            div[class="sys", role="list", aria-label="Compiler parts"] make-->
+                div[role="listitem", class="wide"]: "Command-line entry point"
+                div[role="listitem"]: "Lexer"
+                div[role="listitem"]: "Parser / AST"
+                div[role="listitem"]: "Metadata & ID generation"
+                div[role="listitem"]: "Code generation"
+            <--
+        <--
+        div[class="stage"] make-->
+            svg(svg4)[viewBox="0 0 520 270", role="img", aria-labelledby="t4 d4"] make-->
+                title(t4): "Source line to nested structure to three sheets"
+                desc(d4): "Three blocks form a line, nest inside each other, then spread into three sheets named HTML, CSS and JS."
+                polygon(a4)
+                polygon(b4)
+                polygon(c4p)
+                g(l40) make-->
+                    text[x="260", y="129", text-anchor="middle", font-size="15", font-weight="700", fill="#171a35"]: "center h1(title): Hello"
+                <--
+                g(l41) make-->
+                    text[x="260", y="46", text-anchor="middle", font-size="15", font-weight="800", fill="#171a35"]: "program"
+                    text[x="260", y="92", text-anchor="middle", font-size="15", font-weight="800", fill="#171a35"]: "element"
+                    text[x="260", y="136", text-anchor="middle", font-size="15", font-weight="800", fill="#171a35"]: "child"
+                <--
+                g(l42) make-->
+                    text[x="100", y="138", text-anchor="middle", font-size="20", font-weight="800", fill="#171a35"]: "HTML"
+                    text[x="260", y="138", text-anchor="middle", font-size="20", font-weight="800", fill="#171a35"]: "CSS"
+                    text[x="420", y="138", text-anchor="middle", font-size="20", font-weight="800", fill="#171a35"]: "JS"
+                <--
+            <--
+        <--
+    <--
+<--
+
+section(s5)[class="f", aria-labelledby="h5a"] make-->
+    div[class="in"] make-->
+        div make-->
+            p[class="num"]: "05 · Getting started"
+            h2(h5a): "From a .bob file to a page"
+            p: "The real interactive_greeting.bob, built from the repository on your machine."
+            pre(k5a)
+            div(c5)[class="row"]
+            pre(k5b)[class="wrap"]
+        <--
+        div[class="stage st"] make-->
+            svg(svg5)[viewBox="0 0 400 310", role="img", aria-labelledby="t5 d5"] make-->
+                title(t5): "Source sheet becoming a compiled page"
+                desc(d5): "A blue source sheet squashes into a slab and opens into a browser page showing an input, a Greet me button, and the text Hello, stranger."
+                polygon(p5)
+                text(g5)[class="fade on",x="200", y="160", text-anchor="middle", font-size="26", font-weight="700", fill="#fff"]: ".bob"
+                g(pg5)[class="fade"] make-->
+                    rect[x="30", y="40", width="340", height="30", fill="#2739c7"]
+                    circle[cx="50", cy="55", r="6", fill="#e4523b"]
+                    circle[cx="70", cy="55", r="6", fill="#ffc247"]
+                    circle[cx="90", cy="55", r="6", fill="#278765"]
+                    rect[x="80", y="100", width="240", height="42", fill="#fffefa", stroke="#171a35", stroke-width="2"]
+                    text[x="94", y="127", font-size="15", fill="#5d6078"]: "Your name..."
+                    rect[x="140", y="158", width="120", height="40", fill="#ffc247", stroke="#171a35", stroke-width="2"]
+                    text[x="200", y="184", text-anchor="middle", font-size="16", font-weight="800", fill="#171a35"]: "Greet me"
+                    text[x="200", y="240", text-anchor="middle", font-size="22", font-weight="800", fill="#171a35"]: "Hello, stranger."
+                <--
+            <--
+        <--
+    <--
+<--
+
+section(s6)[class="f white", aria-labelledby="h6a"] make-->
+    div[class="in single"] make-->
+        div make-->
+            p[class="num"]: "06 · Inline versus explicit"
+            h2(h6a): "Commas, or make--> and <--"
+            p: "Inline: the first element is the parent and commas add its children; the line ends the parent. Blocks: make--> opens and <-- closes. Indentation is for readers, not scope."
+            div[class="row"] make-->
+                button(rp6)[type="button", class="btn go"]: "Build both cards"
+            <--
+        <--
+    <--
+    div[class="pair"] make-->
+        div make-->
+            h3: "Inline"
+            pre(k6a)
+            svg(v6a)[class="st",viewBox="0 0 260 210", role="img", aria-labelledby="t6a d6a"] make-->
+                title(t6a): "Inline form builds a card"
+                desc(d6a): "A card is built, then its heading, paragraph and link are added, each joined by a coral comma."
+                rect[x="20", y="10", width="220", height="190", fill="#fffefa", stroke="#171a35", stroke-width="2"]
+                g(ki1)[class="kk on"] make-->
+                    text[x="40", y="52", font-size="20", font-weight="800", fill="#171a35"]: "Card title"
+                <--
+                g(ki2)[class="kk on"] make-->
+                    text[x="30", y="76", font-size="22", font-weight="800", fill="#e4523b"]: ","
+                    text[x="40", y="104", font-size="14", fill="#171a35"]: "A short description"
+                <--
+                g(ki3)[class="kk on"] make-->
+                    text[x="30", y="128", font-size="22", font-weight="800", fill="#e4523b"]: ","
+                    text[x="40", y="156", font-size="14", fill="#2739c7", text-decoration="underline"]: "See work"
+                <--
+            <--
+        <--
+        div make-->
+            h3: "Explicit blocks"
+            pre(k6b)
+            svg(v6b)[class="st",viewBox="0 0 260 210", role="img", aria-labelledby="t6b d6b"] make-->
+                title(t6b): "Block form builds the same card"
+                desc(d6b): "A coral bracket marks the open and close of the block while the same card is assembled."
+                rect[x="20", y="10", width="220", height="190", fill="#fffefa", stroke="#171a35", stroke-width="2"]
+                path(ki4)[d="M12 10H2V200H12", fill="none", stroke="#e4523b", stroke-width="4"]
+                g(kb1)[class="kk on"] make-->
+                    text[x="40", y="52", font-size="20", font-weight="800", fill="#171a35"]: "Card title"
+                <--
+                g(kb2)[class="kk on"] make-->
+                    text[x="40", y="104", font-size="14", fill="#171a35"]: "A short description"
+                <--
+                g(kb3)[class="kk on"] make-->
+                    text[x="40", y="156", font-size="14", fill="#2739c7", text-decoration="underline"]: "See work"
+                <--
+            <--
+        <--
+    <--
+<--
+
+section(s7)[class="f sun", aria-labelledby="h7a"] make-->
+    div[class="in"] make-->
+        div make-->
+            p[class="num"]: "07 · Click"
+            h2(h7a): "Read the box, update the greeting"
+            p: "Type a name and press the button. Bob handles the click, reads name_box, and replaces the heading text. Click is the supported event."
+            label[for="nm"]: "name_box"
+            input(nm)[type="text", maxlength="16", placeholder="Your name...", autocomplete="off"]
+            div[class="row"] make-->
+                button(greet)[type="button", class="btn go"]: "Greet me"
+                button(rs7)[type="button", class="btn"]: "Reset"
+            <--
+            pre(k7)
+        <--
+        div[class="stage st"] make-->
+            svg(svg6)[viewBox="0 0 440 270", role="img", aria-labelledby="t7 d7"] make-->
+                title(t7): "Name field, button and greeting bubble"
+                desc(d7): "The typed name sits in a field. Pressing the button sends a line reading name_box down to a speech bubble that widens to show the new greeting."
+                rect[x="30", y="16", width="380", height="46", fill="#fffefa", stroke="#171a35", stroke-width="2"]
+                text(f7)[x="48", y="46", font-size="18", fill="#5d6078"]: "Your name..."
+                g(bt7)[class="pbtn-group"] make-->
+                    rect(pbtn)[x="130", y="86", width="180", height="44", fill="#2739c7", stroke="#171a35", stroke-width="2", class="pbtn"]
+                    text[x="220", y="115", text-anchor="middle", font-size="17", font-weight="800", fill="#fff"]: "Greet me"
+                <--
+                g(rd7)[class="fade"] make-->
+                    path[d="M340 62V170", stroke="#171a35", stroke-width="4", fill="none", stroke-dasharray="7 6"]
+                    text[x="350", y="118", font-size="12", font-weight="700", fill="#171a35"]: "read name_box"
+                <--
+                polygon(b7)
+                text(g7)[x="220", y="210", text-anchor="middle", font-size="19", font-weight="800", fill="#171a35"]: "Hello, stranger."
+            <--
+        <--
+    <--
+<--
+
+section(s8)[class="f", aria-labelledby="h8a"] make-->
+    div[class="in"] make-->
+        div make-->
+            p[class="num"]: "08 · Styling modifiers"
+            h2(h8a): "Say it after the colon"
+            p: "Toggle a modifier: text colour, bg, a quoted font, a size in rem, or bold. Bob supports this small set, not all of CSS."
+            div(c8)[class="row"]
+            pre(k8)[class="wrap"]
+        <--
+        div[class="stage"] make-->
+            svg(svg7)[viewBox="0 0 400 240", role="img", aria-labelledby="t8 d8"] make-->
+                title(t8): "Styled heading preview"
+                desc(d8): "A heading on a dark slab changes colour, background, font, size and weight as modifiers are toggled."
+                polygon(p8)
+                text(x8)[x="200", y="136", text-anchor="middle"]: "Hello from Bob"
+            <--
+        <--
+    <--
+<--
+
+section(s9)[class="f blue", aria-labelledby="h9a"] make-->
+    div[class="in"] make-->
+        div make-->
+            p[class="num"]: "09 · One output or three"
+            h2(h9a): "One file, or --split"
+            p: "By default CSS and JavaScript sit inside one HTML file. --split aims to write index.html, style.css and script.js into a folder."
+            div(c9)[class="row"]
+            pre(k9)[class="wrap"]
+        <--
+        div[class="stage"] make-->
+            svg(svg8)[viewBox="0 0 520 300", role="img", aria-labelledby="t9 d9"] make-->
+                title(t9): "One sheet versus three sheets"
+                desc(d9): "Three bands form a single HTML file, then separate into index.html, style.css and script.js."
+                polygon(a9)
+                polygon(b9)
+                polygon(c9p)
+                text(ta)[class="tg",x="260", y="75", text-anchor="middle", font-size="19", font-weight="800", fill="#171a35"]: "HTML"
+                text(tb)[class="tg",x="260", y="145", text-anchor="middle", font-size="19", font-weight="800", fill="#171a35"]: "CSS"
+                text(tc)[class="tg",x="260", y="215", text-anchor="middle", font-size="19", font-weight="800", fill="#171a35"]: "JS"
+                g(s9a)[class="fade on mono"] make-->
+                    text[x="260", y="278", text-anchor="middle", font-size="16", font-weight="700", fill="#fff"]: "index.html"
+                <--
+                g(s9b)[class="fade mono"] make-->
+                    text[x="90", y="278", text-anchor="middle", font-size="16", font-weight="700", fill="#fff"]: "index.html"
+                    text[x="260", y="278", text-anchor="middle", font-size="16", font-weight="700", fill="#fff"]: "style.css"
+                    text[x="430", y="278", text-anchor="middle", font-size="16", font-weight="700", fill="#fff"]: "script.js"
+                <--
+            <--
+        <--
+    <--
+<--
+
+section(s10)[class="f white", aria-labelledby="h10a"] make-->
+    div[class="in"] make-->
+        div make-->
+            p[class="num"]: "10 · Strings"
+            h2(h10a): "One line, or many"
+            p: "Triple quotes keep newlines and indentation. Bob commands inside stay literal text."
+            div(c10)[class="row"]
+            pre(k10)
+        <--
+        div[class="stage st"] make-->
+            svg(svg9)[viewBox="0 0 480 270", role="img", aria-labelledby="t10 d10"] make-->
+                title(t10): "Strings becoming page text"
+                desc(d10): "A short card shows one line of text; a taller card shows two lines with coral line-break marks."
+                polygon(p10)
+                text(l10a)[x="60", y="105", font-size="19", fill="#171a35"]: "A paragraph"
+                g(m10)[class="fade"] make-->
+                    text[x="60", y="105", font-size="19", fill="#171a35"]: "A multi-line paragraph."
+                    text[x="60", y="145", font-size="17", fill="#171a35"]: "Bob-looking text such as x = 5 stays literal here."
+                    text[x="368", y="105", font-size="17", font-weight="800", fill="#e4523b"]: "↵"
+                <--
+            <--
+        <--
+    <--
+<--
+
+section(s11)[class="f", aria-labelledby="h11a"] make-->
+    div[class="in"] make-->
+        div make-->
+            p[class="num"]: "11 · Bob-authored SVG"
+            h2(h11a): "A circle inside an svg root"
+            p: "SVG tags are ordinary Bob elements. The root gets its namespace automatically; the circle is self-closing."
+            div(c11)[class="row"]
+            pre(k11)
+        <--
+        div[class="stage"] make-->
+            svg(svg10)[viewBox="0 0 360 330", role="img", aria-labelledby="t11 d11"] make-->
+                title(t11): "A blue circle in a square viewBox"
+                desc(d11): "A dashed square frame closes to a solid one while a blue circle grows from its centre."
+                g[transform="translate(70,40) scale(2.2)"] make-->
+                    rect(fr)[x="0", y="0", width="100", height="100", fill="#fffefa", stroke="#171a35", stroke-width="2", stroke-dasharray="6 5", class="fr"]
+                    circle(ci)[cx="50", cy="50", r="40", fill="#1e90ff", class="ci"]
+                <--
+                g(tk)[class="fade on"] make-->
+                    path[d="M52 24V40H68M308 24V40H292M52 276V260H68M308 276V260H292", stroke="#e4523b", stroke-width="3", fill="none"]
+                <--
+                text[x="180", y="308", text-anchor="middle", font-size="14", fill="#5d6078"]: "viewBox 0 0 100 100"
+            <--
+        <--
+    <--
+<--
+
+footer: "All eleven illustrations are Bob-authored inline SVG with CSS and JavaScript in this one compiled file. No network requests."
+
+js: """
+document.title = 'Bob: eleven interactive illustrations';
+const css = `
+:root{color-scheme:light;--paper:#f2f0e9;--white:#fffefa;--ink:#171a35;--blue:#2739c7;--deep:#18227f;--yellow:#ffc247;--coral:#e4523b;--green:#278765;--muted:#5d6078;--ease:cubic-bezier(.57,-.01,.21,.89);--sans:"Avenir Next","Trebuchet MS","Segoe UI",system-ui,sans-serif;--mono:ui-monospace,Menlo,Consolas,"Courier New",monospace}
+*{box-sizing:border-box;font-variant-ligatures:none}body{margin:0!important;padding:0!important;background:var(--paper);color:var(--ink);font:400 1.02rem/1.6 Georgia,"Times New Roman",serif}h1,h2,h3,.btn,.num,nav a,label{font-family:var(--sans)}h1{font-size:clamp(2.4rem,7vw,5rem);line-height:1;letter-spacing:-.04em;margin:0 0 1rem;font-weight:800}h2{font-size:clamp(1.7rem,3.6vw,2.7rem);line-height:1.05;letter-spacing:-.03em;margin:.3rem 0 .7rem;font-weight:800}h3{font-size:1.15rem;margin:0}p{margin:.6rem 0;max-width:60ch}code{font:.88em var(--mono)}.head{padding:clamp(2.5rem,6vw,5rem) clamp(1.1rem,5vw,5rem) 2rem}.head>*{max-width:1100px;margin-left:auto;margin-right:auto}nav{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.4rem}nav a{min-height:44px;display:inline-flex;align-items:center;padding:0 .9rem;border:2px solid var(--ink);border-radius:3px;color:var(--ink);text-decoration:none;font-weight:700;font-size:.9rem;transition:background .25s var(--ease),color .25s var(--ease)}nav a:hover{background:var(--ink);color:#fff}:focus-visible{outline:3px solid var(--coral);outline-offset:3px}.f{padding:clamp(3rem,7vw,6rem) clamp(1.1rem,5vw,5rem);background:var(--bg,var(--paper));color:var(--fg,var(--ink));scroll-margin-top:0}.blue{--bg:var(--blue);--fg:#fff}.deep{--bg:var(--deep);--fg:#fff}.white{--bg:var(--white)}.sun{--bg:var(--yellow)}.blue :focus-visible,.deep :focus-visible{outline-color:var(--yellow)}.sun :focus-visible{outline-color:var(--ink)}.in{max-width:1100px;margin:auto;display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(1.5rem,5vw,4rem);align-items:center}.in.single{grid-template-columns:1fr}.num{font-size:.82rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin:0;opacity:.8}svg{display:block;width:100%;height:auto;overflow:visible}.row{display:flex;flex-wrap:wrap;gap:.6rem;margin:1.1rem 0}.btn{min-height:44px;padding:.55rem 1rem;border:2px solid currentColor;background:transparent;color:inherit;font-weight:700;font-size:.95rem;border-radius:3px;cursor:pointer;transition:background .25s var(--ease),color .25s var(--ease),transform .25s var(--ease);margin:0}.btn:hover{transform:translateY(-2px)}.btn[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:#fff}.blue .btn[aria-pressed=true],.deep .btn[aria-pressed=true]{background:#fff;border-color:#fff;color:var(--blue)}.sun .btn[aria-pressed=true]{background:var(--ink)}.btn.go{background:var(--yellow);border-color:var(--yellow);color:var(--ink)}.sun .btn.go{background:var(--ink);border-color:var(--ink);color:#fff}.steps{display:grid;gap:.5rem}.steps .btn{text-align:left;width:100%}pre{margin:.9rem 0;padding:1rem;background:var(--ink);color:#f4f3ff;border-radius:3px;overflow:auto;font:.82rem/1.7 var(--mono)}pre.wrap{white-space:pre-wrap;overflow-wrap:anywhere}.L{display:block;padding:0 .4rem;margin:0 -.4rem;transition:background .3s var(--ease)}.L.on{background:rgba(255,194,71,.3)}.k{color:var(--yellow);font-weight:400}.s{color:#9fe3c4;font-weight:400}.c{color:#9aa0d6;font-weight:400}.cm{color:#ff8f7a;font-weight:700}label{font-weight:700;font-size:.9rem;display:block;margin-bottom:.3rem}input[type=text]{width:100%;min-height:44px;font:1rem var(--sans);padding:.4rem .7rem;border:2px solid var(--ink);border-radius:3px;background:#fffefa;color:var(--ink)}.cap{font-family:var(--sans);font-weight:600;min-height:3.2em;margin:.8rem 0 0}.fade{opacity:0;transition:opacity .6s var(--ease)}.fade.on{opacity:1}.kk{opacity:0;transform:translateY(8px);transition:opacity .5s var(--ease),transform .5s var(--ease)}.kk.on{opacity:1;transform:none}polygon{transition:fill .9s var(--ease)}.tg{transition:transform .9s var(--ease)}.mono{font-family:var(--mono)}.sn{font-family:var(--sans)}.sys{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin:1rem 0;font:700 .85rem var(--sans)}.sys div{padding:.7rem .8rem;border:2px solid currentColor;border-radius:3px;transition:background .5s var(--ease),color .5s var(--ease)}.sys .wide{grid-column:1/-1}.sys .on{background:#fff;color:var(--deep);border-color:#fff}.pair{max-width:1100px;margin:2rem auto 0;display:grid;grid-template-columns:1fr 1fr;gap:clamp(1.5rem,4vw,3rem)}.pair h3{font:800 1.15rem var(--sans);margin:0}.t8{transition:font-size .5s var(--ease),fill .5s var(--ease)}.z{transition:fill .5s var(--ease),stroke .5s var(--ease),stroke-dasharray .5s var(--ease),stroke-width .5s var(--ease)}.pressed .pbtn{fill:var(--ink)}.pbtn{transition:fill .25s var(--ease)}footer{display:block;padding:2rem clamp(1.1rem,5vw,5rem);font:.9rem var(--sans);color:var(--muted)}.stage{min-width:0}.st{order:0}.single+.pair{margin-top:2rem}
+@media(max-width:820px){.in,.pair{grid-template-columns:1fr}.stage{order:-1}.sys{grid-template-columns:1fr 1fr}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important}.btn:hover{transform:none}}
+`;
+const style = document.createElement('style'); style.textContent = css; document.head.append(style);
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches,N=240;
+function bez(x1,y1,x2,y2){const f=(s,a,b)=>3*(1-s)*(1-s)*s*a+3*(1-s)*s*s*b+s*s*s;return t=>{if(t<=0||t>=1)return t;let lo=0,hi=1,s=t;for(let i=0;i<30;i++){f(s,x1,x2)<t?lo=s:hi=s;s=(lo+hi)/2}return f(s,y1,y2)}}
+const ease=bez(.57,-.01,.21,.89),$=id=>document.getElementById(id);
+function resample(a){const p=[...a,a[0]],L=[0];for(let i=1;i<p.length;i++)L.push(L[i-1]+Math.hypot(p[i][0]-p[i-1][0],p[i][1]-p[i-1][1]));const T=L.at(-1);return Array.from({length:N},(_,k)=>{const d=T*k/N;let i=1;while(L[i]<d)i++;const t=(d-L[i-1])/(L[i]-L[i-1]||1);return[p[i-1][0]+(p[i][0]-p[i-1][0])*t,p[i-1][1]+(p[i][1]-p[i-1][1])*t]})}
+function morph(el,states,colors,start=0){const S=states.map(resample);let cur=S[start].map(p=>[...p]),raf=0;const draw=()=>el.setAttribute('points',cur.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' '));const paint=n=>{el.style.fill=colors[n]};draw();paint(start);return(n,anim=true)=>{cancelAnimationFrame(raf);paint(n);if(!anim||RM){cur=S[n].map(p=>[...p]);draw();return}const from=cur.map(p=>[...p]),t0=performance.now(),D=950;const f=t=>{const u=Math.min(1,(t-t0)/D),e=ease(u);cur.forEach((p,i)=>{p[0]=from[i][0]+(S[n][i][0]-from[i][0])*e;p[1]=from[i][1]+(S[n][i][1]-from[i][1])*e});draw();if(u<1)raf=requestAnimationFrame(f)};raf=requestAnimationFrame(f)}}
+const rect=(x,y,w,h)=>[[x,y],[x+w,y],[x+w,y+h],[x,y+h]], CY='#e4523b',YE='#ffc247',BL='#2739c7',GR='#278765',IN='#171a35',WH='#fffefa';
+function chips(id,labels,fn,start=0){const box=$(id),bs=[];box.setAttribute('role','group');labels.forEach((label,i)=>{const b=document.createElement('button');b.className='btn';b.type='button';b.textContent=label;b.onclick=()=>select(i,true);box.append(b);bs.push(b)});function select(i,animate){bs.forEach((b,j)=>b.setAttribute('aria-pressed',String(i===j)));fn(i,animate)}select(start,false);return select}
+function lines(id,rows){$(id).innerHTML=rows.map(s=>'<span class="L">'+s+'</span>').join('')}
+function hl(id,nums){[...$(id).children].forEach((el,i)=>el.classList.toggle('on',nums.includes(i)))}
+// 1 · Shape-to-page morph
+{const A=[[40,130],[210,130],[210,60],[360,180],[210,300],[210,230],[40,230]],B=[[60,110],[130,110],[130,70],[190,70],[190,110],[210,110],[210,70],[270,70],[270,110],[340,110],[340,290],[60,290]],Bk=[[190,60],[190,130],[360,130],[360,230],[190,230],[190,300],[40,180]],P=rect(50,40,300,290),labels=['make-->','a block opens','<--','a page'];const go=morph($('p1'),[A,B,Bk,P],[YE,YE,CY,WH],3);const set=chips('c1',['make-->','block','<--','page'],(i,a)=>{go(i,a);$('g1').textContent=labels[i];$('hole').classList.toggle('on',i===1);$('pg').classList.toggle('on',i===3)},3);let timers=[];function play(){timers.forEach(clearTimeout);timers=[];if(RM){set(3,false);return}set(0,false);[1,2,3].forEach((i,k)=>timers.push(setTimeout(()=>set(i,true),1100+k*1900)))}$('rp1').onclick=play;if(!RM&&'IntersectionObserver'in window)new IntersectionObserver((entries,obs)=>{if(entries[0].isIntersecting){obs.disconnect();play()}},{threshold:.5}).observe($('s1'))}
+// 2 · Compiler pipeline
+{const S=[[[100,30],[240,30],[300,90],[300,290],[100,290]],[[50,40],[120,40],[120,150],[165,150],[165,40],[235,40],[235,150],[280,150],[280,40],[350,40],[350,190],[235,190],[235,290],[165,290],[165,190],[50,190]],[[60,50],[150,50],[150,100],[240,100],[240,150],[340,150],[340,290],[60,290]],[[60,70],[150,70],[200,140],[250,70],[340,70],[340,290],[60,290]],[[60,70],[260,70],[345,155],[260,240],[60,240]]],R=[['Read .bob source','Newlines end statements, and // starts a comment.','.bob'],['Tokenize and parse','The compiler builds an internal program from elements, expressions, styles and blocks.','parse'],['Generate HTML, CSS, JavaScript','HTML for the page, CSS for supported styles, JavaScript for runtime and event actions.','html css js'],['Write output','One self-contained HTML file by default; --split aims for three files.','write'],['Save ID metadata','A sibling .meta file is written or updated when source is compiled.','.meta']];const go=morph($('p2'),S,[BL,YE,GR,CY,IN],0);chips('c2',R.map((r,i)=>(i+1)+'  '+r[0]),(i,a)=>{go(i,a);$('cap2').textContent=R[i][1];$('g2').textContent=R[i][2]},0);$('c2').classList.add('steps')}
+// 3 · Zero and double zero
+{const r=$('zr'),t=$('zt'),l=$('zl');lines('k3',['<b class="k">visitor_name</b> = 0    <b class="c">// undefined / uninitialized</b>','<b class="k">is_active</b> = 00     <b class="c">// numeric zero</b>']);chips('c3',['0','00'],i=>{const on=i===1;r.style.fill=on?YE:'transparent';r.style.stroke=on?IN:BL;r.style.strokeWidth=on?14:8;r.style.strokeDasharray=on?'600 0':'3 18';r.setAttribute('stroke-linecap','round');t.textContent=on?'0':'undefined';l.textContent=on?'JavaScript: the number 0':'JavaScript: undefined';hl('k3',[i])},0)}
+// 4 · Compiler architecture
+{const rects=[[rect(30,95,142,55),rect(184,95,144,55),rect(340,95,150,55)],[rect(80,20,360,220),rect(125,65,270,150),rect(170,110,180,80)],[rect(30,30,140,200),rect(190,30,140,200),rect(350,30,140,200)]];const polys=[$('a4'),$('b4'),$('c4p')],items=[...document.querySelectorAll('.sys [role="listitem"]')],map=[1,2,4];const go=(n,anim)=>{polys.forEach((el,i)=>{const m=morph(el,rects.map(s=>s[i]),[CY,YE,WH],2);m(n,anim)});items.forEach((d,i)=>d.classList.toggle('on',i===map[n]));['l40','l41','l42'].forEach((id,i)=>$(id).classList.toggle('on',i===n))};chips('c4',['Source line','Nested structure','Three sheets'],go,2)}
+// 5 · Getting started
+{lines('k5a',['<b class="c">// examples/interactive_greeting.bob</b>','center input(name_box): <b class="s">"Your name..."</b>','center button(greet_button): <b class="s">"Greet me"</b>','center h2(greeting): <b class="s">"Hello, stranger."</b>','','when click(greet_button) make--&gt;','    visitor = read name_box','    if visitor = <b class="s">""</b> make--&gt;','        greeting: <b class="s">"Please enter a name."</b>','    or else--&gt;','        greeting: <b class="s">"Hello, "</b> + visitor','    &lt;--','&lt;--']);lines('k5b',['mkdir -p dist','./bobc.exe examples/interactive_greeting.bob -o dist/index.html']);const sh=[[100,30],[240,30],[300,90],[300,270],[100,270]],states=[sh,sh,rect(60,60,280,180),rect(30,40,340,230)],go=morph($('p5'),states,[BL,BL,YE,WH],0);chips('c5',['Source','mkdir','Compile','Open page'],(i,a)=>{go(i,a);$('pg5').classList.toggle('on',i===3);$('g5').classList.toggle('on',i<3);$('g5').setAttribute('fill',i===2?IN:'#fff');hl('k5b',i===1?[0]:i===2?[1]:[])},3)}
+// 6 · Inline and explicit nesting
+{lines('k6a',['<b class="k">div</b>(card): h2: <b class="s">"Card title"</b><b class="cm">,</b> p: <b class="s">"A short description"</b><b class="cm">,</b> a[href=<b class="s">"/work"</b>]: <b class="s">"See work"</b>']);lines('k6b',['<b class="k">div</b>(card) <b class="k">make--&gt;</b>','    h2: <b class="s">"Card title"</b>','    p: <b class="s">"A short description"</b>','    a[href=<b class="s">"/work"</b>]: <b class="s">"See work"</b>','<b class="k">&lt;--</b>']);let timers=[];$('rp6').onclick=()=>{timers.forEach(clearTimeout);timers=[];const els=[...document.querySelectorAll('#v6a g,#v6b g')];if(RM){els.forEach(k=>k.classList.add('on'));return}els.forEach(k=>k.classList.remove('on'));void document.body.offsetWidth;els.forEach((k,i)=>timers.push(setTimeout(()=>k.classList.add('on'),300+i*400)))}}
+// 7 · Event handler reads the input and updates the greeting
+{lines('k7',['when click(greet_button) make--&gt;','    visitor = read name_box','    if visitor = <b class="s">""</b> make--&gt;','        greeting: <b class="s">"Please enter a name."</b>','    or else--&gt;','        greeting: <b class="s">"Hello, "</b> + visitor','    &lt;--','&lt;--']);const A=[[130,172],[310,172],[310,232],[235,232],[220,254],[205,232],[130,232]],B=[[30,172],[410,172],[410,232],[235,232],[220,254],[205,232],[30,232]],go=morph($('b7'),[A,B],[WH,WH],0),nm=$('nm');nm.addEventListener('input',()=>{$('f7').textContent=nm.value||'Your name...';$('f7').setAttribute('fill',nm.value?IN:'#5d6078')});function reset(){hl('k7',[]);$('rd7').classList.remove('on');$('bt7').classList.remove('pressed');$('g7').textContent='Hello, stranger.';go(0,true)}$('rs7').onclick=()=>{nm.value='';nm.dispatchEvent(new Event('input'));reset()};$('greet').onclick=()=>{reset();const v=nm.value,txt=v===''?'Please enter a name.':'Hello, '+v,d=RM?0:500;const steps=[()=>{$('bt7').classList.add('pressed');hl('k7',[0])},()=>{$('rd7').classList.add('on');hl('k7',[1])},()=>{$('g7').textContent=txt;go(1,true);hl('k7',v===''?[2,3]:[4,5])}];steps.forEach((f,i)=>setTimeout(f,i*d))}}
+// 8 · Styling modifiers
+{const state={c:true,b:true,f:true,s:true,w:true},labels={c:'#1e90ff',b:'bg #111115',f:"'Georgia'",s:'2.0',w:'bold'},x=$('x8'),go=morph($('p8'),[rect(198,123,4,4),rect(30,55,340,150)],['rgba(17,17,21,0)','#111115'],1);const box=$('c8');box.setAttribute('role','group');function draw(){x.style.fill=state.c?'#1e90ff':IN;x.style.fontFamily=state.f?'Georgia,serif':'system-ui,sans-serif';x.style.fontSize=(state.s?36:18)+'px';x.style.fontWeight=state.w?800:400;x.setAttribute('y',state.s?148:131);if(!state.c&&state.b)x.style.fill=WH;go(state.b?1:0,true);lines('k8',['<b class="k">h1</b>(title): <b class="s">"Hello from Bob"</b>'+Object.keys(state).filter(k=>state[k]).map(k=>' '+labels[k]).join('')])}Object.entries({c:'colour',b:'bg',f:'font',s:'size',w:'bold'}).forEach(([k,label])=>{const b=document.createElement('button');b.className='btn';b.type='button';b.textContent=label;b.setAttribute('aria-pressed','true');b.onclick=()=>{state[k]=!state[k];b.setAttribute('aria-pressed',String(state[k]));draw()};box.append(b)});draw()}
+// 9 · Single-file and split output
+{const C=[rect(170,40,180,70),rect(170,110,180,70),rect(170,180,180,70)],D=[rect(20,40,140,210),rect(190,40,140,210),rect(360,40,140,210)],polys=[$('a9'),$('b9'),$('c9p')],T=[[260,75],[260,145],[260,215]],U=[[90,145],[260,145],[430,145]],set=chips('c9',['Default: one file','--split: three files'],(n,a)=>{polys.forEach((p,i)=>{const m=morph(p,[C[i],D[i]],[CY,YE,WH],0);m(n,a)});['ta','tb','tc'].forEach((id,i)=>{$(id).style.transform=`translate(${(n?U[i][0]:T[i][0])-260}px,${(n?U[i][1]:T[i][1])-75}px)`});$('s9a').classList.toggle('on',!n);$('s9b').classList.toggle('on',!!n);lines('k9',[n?'./bobc.exe examples/interactive_greeting.bob --split dist':'./bobc.exe examples/interactive_greeting.bob -o dist/index.html'])},0)}
+// 10 · Single-line and multiline strings
+{const A=rect(30,50,420,90),B=rect(30,50,420,160),go=morph($('p10'),[A,B],[WH,WH],0);chips('c10',['Single line','Multiline'],(i,a)=>{go(i,a);$('m10').classList.toggle('on',!!i);$('l10a').style.opacity=i?0:1;lines('k10',i?['<b class="k">tell</b>: <b class="s">multi-line string delimiter</b>','<b class="s">A multi-line paragraph.</b>','<b class="s">Bob-looking text such as x = 5 stays literal here.</b>','<b class="s">multi-line string delimiter</b>']:['<b class="k">tell</b>: <b class="s">"A paragraph"</b>'])},0)}
+// 11 · Native SVG root, circle and frame
+{lines('k11',['<b class="k">svg</b>[viewBox=<b class="s">"0 0 100 100"</b>, width=<b class="s">"100"</b>, height=<b class="s">"100"</b>] <b class="k">make--&gt;</b>','    circle[cx=<b class="s">"50"</b>, cy=<b class="s">"50"</b>, r=<b class="s">"40"</b>, fill=<b class="s">"#1e90ff"</b>]','<b class="k">&lt;--</b>']);chips('c11',['Open the svg','Add the circle','Close with <--'],i=>{$('ci').style.transform=i>=1?'scale(1)':'scale(0)';$('fr').style.strokeDasharray=i===2?'0':'6 5';$('tk').classList.toggle('on',i===2);hl('k11',[[0],[1],[2]][i])},2)}
+"""
