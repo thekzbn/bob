@@ -19,7 +19,27 @@ when click(hello_btn) make-->
 <--
 ```
 
-## Build and try it
+## Installation & Quick Start
+
+### Via npm (Recommended for macOS, Linux, and Windows)
+
+Zero build setup or C compiler required:
+
+```sh
+# Install globally
+npm install -g bob-lang
+
+# Compile a Bob file
+bobc app.bob -o dist/index.html
+```
+
+Or run directly without installing:
+
+```sh
+npx bob-lang app.bob -o dist/index.html
+```
+
+### Build from source
 
 You need a C compiler such as GCC or Clang, and `make` for the commands below.
 

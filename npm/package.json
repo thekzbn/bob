@@ -1,0 +1,39 @@
+{
+  "name": "bob-lang",
+  "version": "0.1.0",
+  "description": "The Bob esoteric web programming language compiler",
+  "bin": {
+    "bobc": "./index.js",
+    "bob": "./index.js"
+  },
+  "scripts": {
+    "test": "node index.js --version"
+  },
+  "keywords": [
+    "bob",
+    "compiler",
+    "esoteric",
+    "esolang",
+    "web-development",
+    "c"
+  ],
+  "author": "",
+  "license": "MIT",
+  "os": [
+    "darwin",
+    "linux",
+    "win32"
+  ],
+  "cpu": [
+    "x64",
+    "arm64"
+  ],
+  "files": [
+    "index.js",
+    "bin/",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=16"
+  }
+}

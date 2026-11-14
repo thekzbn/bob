@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="view-transition" content="same-origin">
   <title>Getting Started with Bob: Guide & Reference</title>
   <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -246,6 +247,215 @@
       color: var(--accent);
     }
 
+    /* Cross-Document View Transitions (SPA Navigation) */
+    @media (prefers-reduced-motion: no-preference) {
+      @view-transition {
+        navigation: auto;
+      }
+
+      ::view-transition-old(root) {
+        animation: 200ms cubic-bezier(0.57, -0.01, 0.21, 0.89) both vt-fade-out;
+      }
+
+      ::view-transition-new(root) {
+        animation: 200ms cubic-bezier(0.57, -0.01, 0.21, 0.89) both vt-fade-in;
+      }
+    }
+
+    @keyframes vt-fade-out {
+      from { opacity: 1; transform: translateY(0); }
+      to { opacity: 0; transform: translateY(-3px); }
+    }
+
+    @keyframes vt-fade-in {
+      from { opacity: 0; transform: translateY(3px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Bob Interactive Illustration System */
+    .ill-panel {
+      margin: 2rem 0 2.75rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: var(--surface);
+      overflow: hidden;
+      transition: border-color var(--duration) var(--ease);
+    }
+
+    .ill-body {
+      padding: 1.5rem 1.5rem 1.25rem;
+    }
+
+    .ill-num {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.35rem;
+    }
+
+    .ill-title {
+      font-size: 1.18rem;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+
+    .ill-desc {
+      font-size: 0.925rem;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 1.15rem;
+    }
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 0.75rem 0;
+    }
+
+    .btn {
+      min-height: 36px;
+      padding: 0.4rem 0.85rem;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-family: var(--font-sans);
+      font-weight: 500;
+      font-size: 0.825rem;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: background var(--duration) var(--ease), color var(--duration) var(--ease), border-color var(--duration) var(--ease), transform var(--duration) var(--ease);
+    }
+
+    .btn:hover {
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .btn[aria-pressed=true] {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #ffffff;
+    }
+
+    .btn.go {
+      background: var(--surface);
+      border-color: var(--accent);
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .btn.go:hover {
+      background: var(--accent);
+      color: #ffffff;
+    }
+
+    .stage {
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+      padding: 1.75rem 1.25rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 240px;
+    }
+
+    .stage svg {
+      display: block;
+      width: 100%;
+      height: auto;
+      overflow: visible;
+    }
+
+    .fade {
+      opacity: 0;
+      transition: opacity 0.5s var(--ease);
+    }
+
+    .fade.on {
+      opacity: 1;
+    }
+
+    .kk {
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 0.4s var(--ease), transform 0.4s var(--ease);
+    }
+
+    .kk.on {
+      opacity: 1;
+      transform: none;
+    }
+
+    .mono { font-family: var(--font-mono); }
+    .sn { font-family: var(--font-sans); }
+
+    .t8 {
+      transition: font-size 0.5s var(--ease), fill 0.5s var(--ease);
+    }
+
+    .z {
+      transition: fill 0.5s var(--ease), stroke 0.5s var(--ease), stroke-dasharray 0.5s var(--ease), stroke-width 0.5s var(--ease);
+    }
+
+    .L {
+      display: block;
+      padding: 0 0.4rem;
+      margin: 0 -0.4rem;
+      border-radius: 2px;
+      transition: background 0.3s var(--ease);
+    }
+
+    .L.on {
+      background: rgba(30, 144, 255, 0.18);
+      color: var(--accent);
+    }
+
+    .cap {
+      font-family: var(--font-sans);
+      font-size: 0.85rem;
+      color: var(--muted);
+      min-height: 2.6em;
+      margin-top: 0.85rem;
+      line-height: 1.5;
+    }
+
+    .pair-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-top: 1.25rem;
+    }
+
+    @media (max-width: 720px) {
+      .pair-grid { grid-template-columns: 1fr; }
+    }
+
+    .st-input {
+      width: 100%;
+      min-height: 38px;
+      font: 0.95rem var(--font-sans);
+      padding: 0.4rem 0.7rem;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      background: var(--surface);
+      color: var(--text);
+      margin-bottom: 0.75rem;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        transition: none !important;
+        animation: none !important;
+      }
+      .btn:hover { transform: none; }
+    }
+
     footer {
       margin-top: 5rem;
       padding-top: 2rem;
@@ -280,9 +490,28 @@
     </header>
 
     <section>
-      <h2>Building the Compiler</h2>
+      <h2>Installation Options</h2>
       <p>
-        The Bob compiler (<code>bobc</code>) has zero external dependencies beyond a standard C compiler (GCC or Clang).
+        Bob can be installed directly through npm with pre-compiled native binaries for macOS, Linux, and Windows, or built locally from its C11 source code.
+      </p>
+
+      <h3>1. Via npm (Recommended)</h3>
+      <p>
+        No C compiler, Xcode tools, or make setup required. Works out of the box on macOS (Apple Silicon and Intel), Linux, and Windows:
+      </p>
+      <pre><code>npm install -g bob-lang</code></pre>
+      <p>
+        Once installed, compile any Bob document with <code>bobc</code>:
+      </p>
+      <pre><code>bobc app.bob -o dist/index.html</code></pre>
+      <p>
+        You can also run one-shot compilations without installing globally via <code>npx</code>:
+      </p>
+      <pre><code>npx bob-lang app.bob -o dist/index.html</code></pre>
+
+      <h3>2. Building from Source</h3>
+      <p>
+        The Bob compiler source in <code>src/</code> has zero third-party dependencies beyond standard C11 libraries and can be compiled using GCC or Clang:
       </p>
 
       <pre><code>gcc -Wall -Wextra -std=c11 -O2 src/lexer.c src/ast.c src/parser.c src/meta.c src/id_gen.c src/codegen.c src/main.c -o bobc.exe</code></pre>
@@ -345,6 +574,36 @@ when click(action_btn) make-->
         <--
     <--
 <--</code></pre>
+
+      <!-- Illustration 1: From .bob to page -->
+      <div class="ill-panel">
+        <div class="ill-body">
+          <div class="ill-meta">
+            <span class="ill-num">01 / Lifecycle</span>
+          </div>
+          <div class="ill-title">From a .bob File to a Living Page</div>
+          <div class="ill-desc">Watch a source sheet squash and unfold into an interactive browser page with inputs, buttons, and dynamic text:</div>
+          <div class="row" id="cBuild"></div>
+          <pre id="kBuild"></pre>
+        </div>
+        <div class="stage">
+          <svg viewBox="0 0 400 310" role="img" aria-label="Source sheet becoming a compiled page">
+            <polygon id="pBuild" stroke="var(--border)" stroke-width="2" stroke-linejoin="round"/>
+            <text id="gBuild" class="mono fade on" x="200" y="160" text-anchor="middle" font-size="24" font-weight="700" fill="#ffffff">.bob</text>
+            <g id="pgBuild" class="fade">
+              <rect x="30" y="40" width="340" height="30" fill="var(--accent)"/>
+              <circle cx="50" cy="55" r="5" fill="#e4523b"/>
+              <circle cx="68" cy="55" r="5" fill="#ffc247"/>
+              <circle cx="86" cy="55" r="5" fill="#278765"/>
+              <rect x="80" y="95" width="240" height="40" fill="var(--surface)" stroke="var(--border)" stroke-width="1.5"/>
+              <text class="sn" x="96" y="120" font-size="14" fill="var(--muted)">Your name...</text>
+              <rect x="140" y="150" width="120" height="38" fill="#ffc247" stroke="var(--border)" stroke-width="1.5"/>
+              <text class="sn" x="200" y="174" text-anchor="middle" font-size="15" font-weight="700" fill="#171a35">Greet me</text>
+              <text class="sn" x="200" y="235" text-anchor="middle" font-size="20" font-weight="700" fill="var(--text)">Hello, stranger.</text>
+            </g>
+          </svg>
+        </div>
+      </div>
     </section>
 
     <section>
@@ -358,6 +617,26 @@ when click(action_btn) make-->
         <li><code>visitor_name = 0</code> sets the variable to uninitialized (compiled to <code>undefined</code>).</li>
         <li><code>is_active = 00</code> explicitly sets the variable to numeric <code>0</code>.</li>
       </ul>
+
+      <!-- Illustration 2: 0 vs 00 -->
+      <div class="ill-panel">
+        <div class="ill-body">
+          <div class="ill-meta">
+            <span class="ill-num">02 / State Distinction</span>
+          </div>
+          <div class="ill-title">0 is Not 00: Undefined vs Zero</div>
+          <div class="ill-desc">Click between uninitialized zero and numeric zero to observe how Bob maps each literal state:</div>
+          <div class="row" id="cZero"></div>
+          <pre id="kZero"></pre>
+        </div>
+        <div class="stage">
+          <svg viewBox="0 0 320 250" role="img" aria-label="Empty dashed ring versus filled solid ring">
+            <circle id="zr" class="z" cx="160" cy="105" r="75"/>
+            <text id="zt" class="mono" x="160" y="114" text-anchor="middle" font-size="24" font-weight="700" fill="var(--text)"></text>
+            <text id="zl" class="mono" x="160" y="234" text-anchor="middle" font-size="14" fill="var(--muted)"></text>
+          </svg>
+        </div>
+      </div>
 
       <h3>2. Anatomy of the Colon</h3>
       <p>
@@ -377,12 +656,111 @@ when click(action_btn) make-->
         The line boundary terminates the parent element. Elements declared on the subsequent line are siblings outside the container.
       </p>
 
+      <!-- Illustration 3: Inline vs Explicit Nesting -->
+      <div class="ill-panel">
+        <div class="ill-body">
+          <div class="ill-meta">
+            <span class="ill-num">03 / DOM Nesting</span>
+          </div>
+          <div class="ill-title">Commas vs Explicit Arrow Blocks</div>
+          <div class="ill-desc">Inline comma siblings and explicit <code>make--> ... <--</code> blocks both produce identical DOM structures:</div>
+          <div class="row">
+            <button class="btn go" id="rpNest" type="button">Replay Assembly</button>
+          </div>
+          <div class="pair-grid">
+            <div>
+              <p><strong>Inline Form</strong></p>
+              <pre id="kNestA"></pre>
+              <div class="stage" style="min-height: 200px; padding: 1rem;">
+                <svg id="vNestA" viewBox="0 0 260 200" role="img" aria-label="Inline form card assembly">
+                  <rect x="20" y="10" width="220" height="180" fill="var(--surface)" stroke="var(--border)" stroke-width="1.5"/>
+                  <g class="kk on"><text class="sn" x="40" y="52" font-size="18" font-weight="700" fill="var(--text)">Card title</text></g>
+                  <g class="kk on"><text class="mono" x="30" y="76" font-size="20" font-weight="700" fill="#e4523b">,</text><text class="sn" x="42" y="102" font-size="13" fill="var(--muted)">A short description</text></g>
+                  <g class="kk on"><text class="mono" x="30" y="126" font-size="20" font-weight="700" fill="#e4523b">,</text><text class="sn" x="42" y="152" font-size="13" fill="var(--accent)" text-decoration="underline">See docs</text></g>
+                </svg>
+              </div>
+            </div>
+            <div>
+              <p><strong>Explicit Block Form</strong></p>
+              <pre id="kNestB"></pre>
+              <div class="stage" style="min-height: 200px; padding: 1rem;">
+                <svg id="vNestB" viewBox="0 0 260 200" role="img" aria-label="Explicit block form card assembly">
+                  <rect x="20" y="10" width="220" height="180" fill="var(--surface)" stroke="var(--border)" stroke-width="1.5"/>
+                  <g class="kk on"><path d="M12 10H4V190H12" fill="none" stroke="#e4523b" stroke-width="3"/></g>
+                  <g class="kk on"><text class="sn" x="40" y="52" font-size="18" font-weight="700" fill="var(--text)">Card title</text></g>
+                  <g class="kk on"><text class="sn" x="40" y="102" font-size="13" fill="var(--muted)">A short description</text></g>
+                  <g class="kk on"><text class="sn" x="40" y="152" font-size="13" fill="var(--accent)" text-decoration="underline">See docs</text></g>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <h3>4. Implicit Event Target</h3>
       <p>
         Within <code>when click(action_btn) make--></code>, referencing <code>action_btn: "Confirm Username"</code> modifies only the clicked button via <code>event.currentTarget</code>.
       </p>
 
-      <h3>5. Triple-Quoted Strings</h3>
+      <!-- Illustration 4: Click & Reactive Event -->
+      <div class="ill-panel">
+        <div class="ill-body">
+          <div class="ill-meta">
+            <span class="ill-num">04 / Reactivity</span>
+          </div>
+          <div class="ill-title">Read Input and Mutate Heading</div>
+          <div class="ill-desc">Type a name in the box and click the button to trigger Bob's live event dispatcher and reading engine:</div>
+          <label for="nmBox"><strong>name_box:</strong></label>
+          <input type="text" id="nmBox" class="st-input" maxlength="20" placeholder="Type a name..." autocomplete="off">
+          <div class="row">
+            <button class="btn go" id="greetBtn" type="button">Greet me</button>
+            <button class="btn" id="rsGreet" type="button">Reset</button>
+          </div>
+          <pre id="kClick"></pre>
+        </div>
+        <div class="stage">
+          <svg viewBox="0 0 440 270" role="img" aria-label="Interactive name input, greet button, and expanding speech bubble">
+            <rect x="30" y="16" width="380" height="46" fill="var(--surface)" stroke="var(--border)" stroke-width="1.5"/>
+            <text id="fClick" class="sn" x="48" y="46" font-size="17" fill="var(--muted)">Type a name...</text>
+            <g id="btClick">
+              <rect class="btn-rect" x="130" y="86" width="180" height="44" fill="var(--accent)" stroke="var(--border)" stroke-width="1.5" rx="3"/>
+              <text class="sn" x="220" y="114" text-anchor="middle" font-size="16" font-weight="700" fill="#ffffff">Greet me</text>
+            </g>
+            <g id="rdClick" class="fade">
+              <path d="M340 62V170" stroke="var(--accent)" stroke-width="3" fill="none" stroke-dasharray="6 5"/>
+              <text class="mono" x="350" y="118" font-size="11" font-weight="700" fill="var(--accent)">read name_box</text>
+            </g>
+            <polygon id="bClick" stroke="var(--border)" stroke-width="1.5" stroke-linejoin="round"/>
+            <text id="gClick" class="sn" x="220" y="210" text-anchor="middle" font-size="18" font-weight="700" fill="var(--text)">Hello, stranger.</text>
+          </svg>
+        </div>
+      </div>
+
+      <h3>5. Styling Modifiers</h3>
+      <p>
+        Bob uses concise modifiers after the colon to style color, background, font families, rem sizes, and font weights without complex CSS classes:
+      </p>
+
+      <!-- Illustration 5: Styling Modifiers -->
+      <div class="ill-panel">
+        <div class="ill-body">
+          <div class="ill-meta">
+            <span class="ill-num">05 / Aesthetics</span>
+          </div>
+          <div class="ill-title">Say it After the Colon</div>
+          <div class="ill-desc">Toggle modifiers to observe how tokens modify element properties and update the generated source code:</div>
+          <div class="row" id="cStyle"></div>
+          <pre id="kStyle"></pre>
+        </div>
+        <div class="stage">
+          <svg viewBox="0 0 400 240" role="img" aria-label="Styled heading preview dynamically updating">
+            <polygon id="pStyle" stroke="var(--border)" stroke-width="1.5"/>
+            <text id="xStyle" class="t8" x="200" y="136" text-anchor="middle">Hello from Bob</text>
+          </svg>
+        </div>
+      </div>
+
+      <h3>6. Triple-Quoted Strings</h3>
       <p>
         Multi-line text blocks preserve raw newlines and spaces using <code>""" ... """</code> without interpreting internal Bob keywords:
       </p>
@@ -391,7 +769,7 @@ First line of article.
 Second line with literal code: car = 5
 """</code></pre>
 
-      <h3>6. General Attributes & CSS Classes</h3>
+      <h3>7. General Attributes & CSS Classes</h3>
       <p>
         Assign arbitrary HTML attributes in square brackets and manage CSS classes dynamically:
       </p>
@@ -401,17 +779,35 @@ when click(theme_btn) make-->
     toggle_class root "dark"
 <--</code></pre>
 
-      <h3>7. Arbitrary Depth Blocks & JS Interoperability</h3>
+      <h3>8. Native SVG Shapes</h3>
       <p>
-        Nest elements to any depth using <code>tag make--> ... <--</code> and integrate with browser APIs:
+        SVG tags are native Bob elements. The root element receives its XML namespace automatically and empty shapes self-close:
       </p>
-      <pre><code>article make-->
-    section make-->
-        h1: "Deeply Nested"
-    <--
-<--
-theme = js localStorage.getItem("theme")
-js: console.time("render")</code></pre>
+
+      <!-- Illustration 6: Bob SVG -->
+      <div class="ill-panel">
+        <div class="ill-body">
+          <div class="ill-meta">
+            <span class="ill-num">06 / Vector Graphics</span>
+          </div>
+          <div class="ill-title">A Circle Inside an SVG Root</div>
+          <div class="ill-desc">Step through how Bob authors namespaced vector graphics:</div>
+          <div class="row" id="cSvg"></div>
+          <pre id="kSvg"></pre>
+        </div>
+        <div class="stage">
+          <svg viewBox="0 0 360 330" role="img" aria-label="SVG viewBox and circle assembly">
+            <g transform="translate(70,40) scale(2.2)">
+              <rect id="frSvg" x="0" y="0" width="100" height="100" fill="var(--surface)" stroke="var(--border)" stroke-width="1.5" stroke-dasharray="6 5" vector-effect="non-scaling-stroke" style="transition:stroke-dasharray .6s var(--ease)"/>
+              <circle id="ciSvg" cx="50" cy="50" r="40" fill="var(--accent)" style="transform-box:fill-box;transform-origin:center;transition:transform .9s var(--ease)"/>
+            </g>
+            <g id="tkSvg" class="fade on" stroke="#e4523b" stroke-width="3" fill="none">
+              <path d="M52 24V40H68M308 24V40H292M52 276V260H68M308 276V260H292"/>
+            </g>
+            <text class="mono" x="180" y="308" text-anchor="middle" font-size="14" fill="var(--muted)">viewBox 0 0 100 100</text>
+          </svg>
+        </div>
+      </div>
     </section>
 
     <section>
@@ -570,6 +966,270 @@ js: console.time("render")</code></pre>
       localStorage.setItem('bob-theme', isDark ? 'dark' : 'light');
       applyTheme(isDark);
     });
+
+    /* Bob Vector Morphing Animation Engine */
+    const $ = id => document.getElementById(id);
+    const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const N = 240;
+
+    function bez(x1, y1, x2, y2) {
+      const f = (s, a, b) => 3 * (1 - s) * (1 - s) * s * a + 3 * (1 - s) * s * s * b + s * s * s;
+      return t => {
+        if (t <= 0 || t >= 1) return t;
+        let lo = 0, hi = 1, s = t;
+        for (let i = 0; i < 30; i++) {
+          f(s, x1, x2) < t ? lo = s : hi = s;
+          s = (lo + hi) / 2;
+        }
+        return f(s, y1, y2);
+      };
+    }
+    const ease = bez(0.57, -0.01, 0.21, 0.89);
+
+    function rs(a) {
+      const p = [...a, a[0]], L = [0];
+      for (let i = 1; i < p.length; i++) L.push(L[i - 1] + Math.hypot(p[i][0] - p[i - 1][0], p[i][1] - p[i - 1][1]));
+      const T = L[L.length - 1];
+      return Array.from({ length: N }, (_, k) => {
+        const d = T * k / N;
+        let i = 1;
+        while (L[i] < d) i++;
+        const t = (d - L[i - 1]) / (L[i] - L[i - 1] || 1);
+        return [p[i - 1][0] + (p[i][0] - p[i - 1][0]) * t, p[i - 1][1] + (p[i][1] - p[i - 1][1]) * t];
+      });
+    }
+
+    function M(els, S, F, cb, st = 0) {
+      S = S.map(s => s.map(rs));
+      const cur = S[st].map(s => s.map(p => [...p])), raf = [0];
+      const draw = () => els.forEach((e, k) => e.setAttribute('points', cur[k].map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ')));
+      const paint = n => els.forEach((e, k) => { if (F[n] && F[n][k] !== undefined) e.style.fill = F[n][k]; });
+      draw();
+      paint(st);
+      return (n, anim) => {
+        cancelAnimationFrame(raf[0]);
+        paint(n);
+        cb && cb(n);
+        if (!anim || RM) {
+          cur.forEach((s, k) => s.forEach((p, i) => { p[0] = S[n][k][i][0]; p[1] = S[n][k][i][1]; }));
+          draw();
+          return;
+        }
+        const from = cur.map(s => s.map(p => [...p])), t0 = performance.now(), D = 950;
+        const f = t => {
+          const u = Math.max(0, Math.min(1, (t - t0) / D)), e = ease(u);
+          cur.forEach((s, k) => s.forEach((p, i) => {
+            p[0] = from[k][i][0] + (S[n][k][i][0] - from[k][i][0]) * e;
+            p[1] = from[k][i][1] + (S[n][k][i][1] - from[k][i][1]) * e;
+          }));
+          draw();
+          if (u < 1) raf[0] = requestAnimationFrame(f);
+        };
+        raf[0] = requestAnimationFrame(f);
+      };
+    }
+    const M1 = (el, S, F, cb, st) => M([el], S.map(s => [s]), F.map(f => [f]), cb, st);
+
+    function chips(box, labels, fn, st, pre) {
+      box.setAttribute('role', 'group');
+      const bs = labels.map((l, i) => {
+        const b = document.createElement('button');
+        b.className = 'btn';
+        b.type = 'button';
+        b.textContent = l;
+        b.onclick = () => { pre && pre(); sel(i, 1); };
+        box.append(b);
+        return b;
+      });
+      function sel(i, a) {
+        bs.forEach((b, j) => b.setAttribute('aria-pressed', j === i));
+        fn(i, a);
+      }
+      sel(st, 0);
+      return sel;
+    }
+
+    const code = (el, ls) => el.innerHTML = ls.map(l => `<span class="L">${l}</span>`).join('');
+    const hl = (el, on) => [...el.children].forEach((c, i) => c.classList.toggle('on', on.includes(i)));
+    const rect = (x, y, w, h) => [[x, y], [x + w, y], [x + w, y + h], [x, y + h]];
+    const CY = '#e4523b', YE = '#ffc247', BL = '#1e90ff', GR = '#278765', IN = '#171a35', WH = '#ffffff';
+
+    /* 1. Build Lifecycle */
+    {
+      code($('kBuild'), [
+        'mkdir -p dist',
+        './bobc.exe examples/interactive_greeting.bob -o dist/index.html'
+      ]);
+      const sh = [[100, 30], [240, 30], [300, 90], [300, 270], [100, 270]];
+      const go = M1($('pBuild'), [sh, sh, rect(60, 60, 280, 180), rect(30, 40, 340, 230)], [BL, BL, YE, WH], n => {
+        $('pgBuild').classList.toggle('on', n === 3);
+        $('gBuild').classList.toggle('on', n < 3);
+        $('gBuild').setAttribute('fill', n === 2 ? IN : '#ffffff');
+        hl($('kBuild'), n === 1 ? [0] : n === 2 ? [1] : []);
+      }, 3);
+      chips($('cBuild'), ['Source .bob', 'mkdir dist', 'Compile binary', 'Open page'], (i, a) => go(i, a), 3);
+    }
+
+    /* 2. Zero vs Double Zero */
+    {
+      const r = $('zr'), t = $('zt'), l = $('zl');
+      code($('kZero'), [
+        'visitor_name = 0    // uninitialized (undefined)',
+        'is_active = 00     // numeric zero (0)'
+      ]);
+      chips($('cZero'), ['0 (Uninitialized)', '00 (Numeric Zero)'], i => {
+        const on = i === 1;
+        r.style.fill = on ? YE : 'transparent';
+        r.style.stroke = on ? IN : BL;
+        r.style.strokeWidth = on ? 12 : 6;
+        r.style.strokeDasharray = on ? '600 0' : '4 14';
+        t.textContent = on ? '0' : 'undefined';
+        l.textContent = on ? 'JavaScript: numeric 0' : 'JavaScript: undefined';
+        hl($('kZero'), [i]);
+      }, 0);
+    }
+
+    /* 3. Inline vs Explicit Nesting */
+    {
+      code($('kNestA'), [
+        'div(card): h2: "Card title", p: "A short description", a[href="/work"]: "See docs"'
+      ]);
+      code($('kNestB'), [
+        'div(card) make-->',
+        '    h2: "Card title"',
+        '    p: "A short description"',
+        '    a[href="/work"]: "See docs"',
+        '<--'
+      ]);
+      let tm = [];
+      const ks = () => [...document.querySelectorAll('#vNestA .kk, #vNestB .kk')];
+      $('rpNest').onclick = () => {
+        tm.forEach(clearTimeout);
+        tm = [];
+        if (RM) {
+          ks().forEach(k => k.classList.add('on'));
+          return;
+        }
+        ks().forEach(k => k.classList.remove('on'));
+        void document.body.offsetWidth;
+        ['#vNestA', '#vNestB'].forEach(v => {
+          [...document.querySelectorAll(v + ' .kk')].forEach((k, i) => {
+            tm.push(setTimeout(() => k.classList.add('on'), 250 + i * 500));
+          });
+        });
+      };
+    }
+
+    /* 4. Click & Reactive Event */
+    {
+      code($('kClick'), [
+        'when click(greet_button) make-->',
+        '    visitor = read name_box',
+        '    if visitor = "" make-->',
+        '        greeting: "Please enter a name."',
+        '    or else-->',
+        '        greeting: "Hello, " + visitor',
+        '    <--',
+        '<--'
+      ]);
+      const B0 = [[130, 172], [310, 172], [310, 232], [235, 232], [220, 254], [205, 232], [130, 232]];
+      const B1 = [[30, 172], [410, 172], [410, 232], [235, 232], [220, 254], [205, 232], [30, 232]];
+      const go = M1($('bClick'), [B0, B1], [WH, WH], null, 0);
+      $('bClick').style.stroke = 'var(--border)';
+      $('bClick').style.strokeWidth = 1.5;
+
+      const nm = $('nmBox'), f7 = $('fClick');
+      let tm = [];
+      nm.addEventListener('input', () => {
+        f7.textContent = nm.value || 'Type a name...';
+        f7.setAttribute('fill', nm.value ? 'var(--text)' : 'var(--muted)');
+      });
+
+      const reset = () => {
+        tm.forEach(clearTimeout);
+        tm = [];
+        hl($('kClick'), []);
+        $('rdClick').classList.remove('on');
+        $('gClick').textContent = 'Hello, stranger.';
+        go(0, 1);
+      };
+
+      $('rsGreet').onclick = () => {
+        nm.value = '';
+        nm.dispatchEvent(new Event('input'));
+        reset();
+      };
+
+      $('greetBtn').onclick = () => {
+        reset();
+        const v = nm.value.trim();
+        const txt = v === '' ? 'Please enter a name.' : 'Hello, ' + v + '.';
+        const d = RM ? 0 : 600;
+        const st = [
+          () => { hl($('kClick'), [0]); },
+          () => { hl($('kClick'), [1]); $('rdClick').classList.add('on'); },
+          () => {
+            hl($('kClick'), v === '' ? [2, 3] : [4, 5]);
+            $('gClick').textContent = txt;
+            go(1, 1);
+          }
+        ];
+        st.forEach((f, i) => d ? tm.push(setTimeout(f, i * d)) : f());
+      };
+    }
+
+    /* 5. Styling Modifiers */
+    {
+      const o = { c: 1, b: 1, f: 1, s: 1, w: 1 };
+      const names = { c: '#1e90ff', b: 'bg #111115', f: "'Inter'", s: '2.0', w: 'bold' };
+      const x = $('xStyle');
+      const go = M1($('pStyle'), [rect(198, 123, 4, 4), rect(30, 55, 340, 150)], ['rgba(17,17,21,0)', '#111115'], null, 1);
+
+      function drawStyle() {
+        x.style.fill = o.c ? '#1e90ff' : 'var(--text)';
+        x.style.fontFamily = o.f ? "'Inter', sans-serif" : 'var(--font-mono)';
+        x.style.fontSize = (o.s ? 32 : 18) + 'px';
+        x.style.fontWeight = o.w ? 700 : 400;
+        x.setAttribute('y', o.s ? 144 : 132);
+        if (!o.c && o.b) x.style.fill = '#ffffff';
+        go(o.b ? 1 : 0, 1);
+        code($('kStyle'), [
+          'h1(title): "Hello from Bob"' + Object.keys(o).filter(k => o[k]).map(k => ' ' + names[k]).join('')
+        ]);
+      }
+
+      const box = $('cStyle');
+      box.setAttribute('role', 'group');
+      [['c', 'color #1e90ff'], ['b', 'bg #111115'], ['f', "font 'Inter'"], ['s', 'size 2.0'], ['w', 'bold']].forEach(([k, l]) => {
+        const b = document.createElement('button');
+        b.className = 'btn';
+        b.type = 'button';
+        b.textContent = l;
+        b.setAttribute('aria-pressed', true);
+        b.onclick = () => {
+          o[k] = !o[k];
+          b.setAttribute('aria-pressed', !!o[k]);
+          drawStyle();
+        };
+        box.append(b);
+      });
+      drawStyle();
+    }
+
+    /* 6. Bob SVG */
+    {
+      code($('kSvg'), [
+        'svg[viewBox="0 0 100 100", width="100", height="100"] make-->',
+        '    circle[cx="50", cy="50", r="40", fill="#1e90ff"]',
+        '<--'
+      ]);
+      chips($('cSvg'), ['Open the svg', 'Add the circle', 'Close with <--'], i => {
+        $('ciSvg').style.transform = i >= 1 ? 'scale(1)' : 'scale(0)';
+        $('frSvg').style.strokeDasharray = i === 2 ? '0' : '6 5';
+        $('tkSvg').classList.toggle('on', i === 2);
+        hl($('kSvg'), [[0], [1], [2]][i]);
+      }, 2);
+    }
   </script>
 </body>
 </html>
