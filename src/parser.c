@@ -315,7 +315,7 @@ static bool looks_like_element_start(Parser *p) {
     TokenType cur = p->current.type;
     TokenType nxt = p->peek.type;
 
-    if (cur == TOKEN_IDENT || cur == TOKEN_KW_TELL) {
+    if (cur == TOKEN_IDENT || cur == TOKEN_KW_TELL || cur == TOKEN_KW_TEXT) {
         if (nxt == TOKEN_COLON || nxt == TOKEN_LPAREN || nxt == TOKEN_LBRACKET || nxt == TOKEN_MAKE_ARROW) return true;
         if (strcmp(p->current.text, "center") == 0 ||
             strcmp(p->current.text, "left") == 0 ||
@@ -340,7 +340,7 @@ static BobElement *parse_single_element(Parser *p) {
         advance(p);
     }
 
-    if (!check(p, TOKEN_IDENT) && !check(p, TOKEN_KW_TELL)) {
+    if (!check(p, TOKEN_IDENT) && !check(p, TOKEN_KW_TELL) && !check(p, TOKEN_KW_TEXT)) {
         parse_error(p, "Expected HTML/SVG tag name");
         if (alignment) free(alignment);
         return NULL;
@@ -412,7 +412,7 @@ static Stmt *parse_element_statement(Parser *p) {
         advance(p);
     }
 
-    if (!check(p, TOKEN_IDENT) && !check(p, TOKEN_KW_TELL)) {
+    if (!check(p, TOKEN_IDENT) && !check(p, TOKEN_KW_TELL) && !check(p, TOKEN_KW_TEXT)) {
         parse_error(p, "Expected element declaration");
         if (alignment) free(alignment);
         return NULL;
