@@ -526,12 +526,33 @@
     <section>
       <h2>Project Initialization</h2>
       <p>
-        Bob does not use package managers, configuration files, or build artifacts. A project begins with a single <code>.bob</code> source file:
+        The quickest way to start a Bob project anywhere on your machine is the built-in <code>init</code> command. It scaffolds a complete starter project with no manual file creation:
       </p>
 
+      <pre><code>bobc init my-site
+cd my-site
+bobc app.bob</code></pre>
+
+      <p>
+        This creates a <code>my-site/</code> folder containing:
+      </p>
+      <ul>
+        <li><code>app.bob</code> &mdash; a starter source file with document title, stylesheet link, favicon, and an interactive counter</li>
+        <li><code>style.css</code> &mdash; a starter custom stylesheet</li>
+        <li><code>dist/</code> &mdash; the build output folder</li>
+      </ul>
+
+      <p>
+        To initialize inside the current directory instead:
+      </p>
+      <pre><code>bobc init</code></pre>
+
+      <p>
+        You can also start from scratch. A Bob project is simply a <code>.bob</code> file. No configuration, no manifests:
+      </p>
       <pre><code>mkdir site
 cd site
-touch app.bob</code></pre>
+bobc app.bob</code></pre>
     </section>
 
     <section>
@@ -540,7 +561,12 @@ touch app.bob</code></pre>
         Here is a functional application written in <code>app.bob</code>. It establishes variables, applies global styling, creates an inline nested structure, registers event listeners, and coordinates transitions:
       </p>
 
-      <pre><code>// 1. Declare state variables
+      <pre><code>// 0. Document metadata
+name: "Bob Portal"
+css+: style.css
+favicon+: favicon.ico
+
+// 1. Declare state variables
 visitor_name = 0
 is_active = 00
 
@@ -817,18 +843,18 @@ when click(theme_btn) make-->
       <p>
         To produce a standalone HTML file with embedded CSS and runtime:
       </p>
-      <pre><code>./bobc.exe app.bob -o dist/index.html</code></pre>
+      <pre><code>bobc app.bob -o dist/index.html</code></pre>
       <p>
-        The generated file requires no server and functions when opened directly from the filesystem.
+        The generated file requires no server and works when opened directly from the filesystem. Any <code>name:</code>, <code>css+:</code>, <code>favicon+:</code>, and <code>linked+:</code> declarations in your source are emitted directly into the <code>&lt;head&gt;</code>.
       </p>
 
       <h3>Split-File Output</h3>
       <p>
-        If separate files are needed for web servers:
+        If separate files are needed for web servers or deployment pipelines:
       </p>
-      <pre><code>./bobc.exe app.bob --split dist/</code></pre>
+      <pre><code>bobc app.bob --split dist</code></pre>
       <p>
-        This emits <code>dist/index.html</code>, <code>dist/style.css</code>, and <code>dist/script.js</code>.
+        This emits <code>dist/index.html</code>, <code>dist/style.css</code>, and <code>dist/script.js</code>. The output directory is created automatically if it does not exist.
       </p>
     </section>
 
@@ -927,6 +953,31 @@ when click(theme_btn) make-->
             <td>JavaScript interop</td>
             <td class="code-col">x = js localStorage.getItem("k")</td>
             <td>Direct JS expressions and statement blocks</td>
+          </tr>
+          <tr>
+            <td>Document title</td>
+            <td class="code-col">name: "My Site"</td>
+            <td>Sets the HTML &lt;title&gt; tag</td>
+          </tr>
+          <tr>
+            <td>Stylesheet link</td>
+            <td class="code-col">css+: style.css</td>
+            <td>Emits &lt;link rel="stylesheet"&gt; in head</td>
+          </tr>
+          <tr>
+            <td>Favicon link</td>
+            <td class="code-col">favicon+: favicon.ico</td>
+            <td>Emits &lt;link rel="icon"&gt; in head</td>
+          </tr>
+          <tr>
+            <td>Generic head link</td>
+            <td class="code-col">linked+: "url" [rel="preconnect"]</td>
+            <td>Emits any &lt;link&gt; tag with custom attributes</td>
+          </tr>
+          <tr>
+            <td>Project scaffold</td>
+            <td class="code-col">bobc init [dir]</td>
+            <td>Creates a starter project anywhere on disk</td>
           </tr>
         </tbody>
       </table>
