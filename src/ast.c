@@ -133,6 +133,18 @@ void element_add_attribute(BobElement *elem, const char *name, Expr *value, bool
     attr->is_boolean = is_boolean;
 }
 
+void head_link_add_attribute(Stmt *stmt, const char *name, Expr *value, bool is_boolean) {
+    if (!stmt || stmt->type != STMT_HEAD_LINK) return;
+    if (stmt->as.head_link.attr_count >= stmt->as.head_link.attr_capacity) {
+        stmt->as.head_link.attr_capacity = stmt->as.head_link.attr_capacity ? stmt->as.head_link.attr_capacity * 2 : 4;
+        stmt->as.head_link.attributes = (Attribute *)bob_realloc(stmt->as.head_link.attributes, sizeof(Attribute) * stmt->as.head_link.attr_capacity);
+    }
+    Attribute *attr = &stmt->as.head_link.attributes[stmt->as.head_link.attr_count++];
+    attr->name = bob_strdup(name);
+    attr->value = value;
+    attr->is_boolean = is_boolean;
+}
+
 static void free_style_modifiers(StyleModifiers *style) {
     if (style->alignment) free(style->alignment);
     if (style->text_color) free(style->text_color);
@@ -241,6 +253,20 @@ void stmt_free(Stmt *stmt) {
             break;
         case STMT_JS_STMT:
             free(stmt->as.js_stmt.code);
+            break;
+        case STMT_DOC_TITLE:
+            expr_free(stmt->as.doc_title.title_expr);
+            break;
+        case STMT_HEAD_LINK:
+            if (stmt->as.head_link.default_rel) free(stmt->as.head_link.default_rel);
+            if (stmt->as.head_link.href) free(stmt->as.head_link.href);
+            for (size_t i = 0; i < stmt->as.head_link.attr_count; i++) {
+                free(stmt->as.head_link.attributes[i].name);
+                if (stmt->as.head_link.attributes[i].value) {
+                    expr_free(stmt->as.head_link.attributes[i].value);
+                }
+            }
+            if (stmt->as.head_link.attributes) free(stmt->as.head_link.attributes);
             break;
         default:
             break;

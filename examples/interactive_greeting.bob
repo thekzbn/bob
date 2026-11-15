@@ -3,6 +3,7 @@ is_input_open = 00
 
 page: bg #0b2e1e #f5f5dc 'Inter'
 
+h2: "Leke sponsor me" #1e90ff
 center h1(greeting): "Hello, stranger." #f5f5dc 2.5
 center tell(subtext): "Tell me your name so I can greet you properly." #f5f5dc 1.1
 

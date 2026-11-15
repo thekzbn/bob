@@ -5,6 +5,14 @@
 #include "meta.h"
 #include "id_gen.h"
 
+#ifdef _WIN32
+#include <direct.h>
+#define bob_mkdir(dir) _mkdir(dir)
+#else
+#include <sys/stat.h>
+#define bob_mkdir(dir) mkdir(dir, 0755)
+#endif
+
 static char *read_entire_file(const char *path) {
     FILE *f = fopen(path, "rb");
     if (!f) {
@@ -24,7 +32,9 @@ static char *read_entire_file(const char *path) {
 
 static void print_usage(const char *prog_name) {
     printf("Bob Compiler (bobc) v0.1.0\n");
-    printf("Usage: %s <source.bob> [options]\n\n", prog_name);
+    printf("Usage:\n");
+    printf("  %s <source.bob> [options]    Compile a Bob application\n", prog_name);
+    printf("  %s init [directory]          Initialize a new Bob project with starter files\n\n", prog_name);
     printf("Options:\n");
     printf("  -o <file.html>     Specify output single-file HTML path (default: dist/index.html)\n");
     printf("  --split <dir>      Emit split files (index.html, style.css, script.js)\n");
@@ -32,10 +42,94 @@ static void print_usage(const char *prog_name) {
     printf("  -v, --version      Display compiler version\n");
 }
 
+static int handle_init_command(int argc, char **argv) {
+    const char *target_dir = (argc > 2) ? argv[2] : ".";
+    if (strcmp(target_dir, ".") != 0) {
+        bob_mkdir(target_dir);
+    }
+
+    char app_bob_path[512];
+    char style_css_path[512];
+    char dist_dir_path[512];
+
+    if (strcmp(target_dir, ".") == 0) {
+        snprintf(app_bob_path, sizeof(app_bob_path), "app.bob");
+        snprintf(style_css_path, sizeof(style_css_path), "style.css");
+        snprintf(dist_dir_path, sizeof(dist_dir_path), "dist");
+    } else {
+        snprintf(app_bob_path, sizeof(app_bob_path), "%s/app.bob", target_dir);
+        snprintf(style_css_path, sizeof(style_css_path), "%s/style.css", target_dir);
+        snprintf(dist_dir_path, sizeof(dist_dir_path), "%s/dist", target_dir);
+    }
+
+    bob_mkdir(dist_dir_path);
+
+    /* Create starter app.bob */
+    FILE *fbob = fopen(app_bob_path, "r");
+    if (fbob) {
+        fclose(fbob);
+        printf("Note: '%s' already exists, leaving it unchanged.\n", app_bob_path);
+    } else {
+        fbob = fopen(app_bob_path, "w");
+        if (fbob) {
+            fprintf(fbob, "name: \"My Bob Project\"\n");
+            fprintf(fbob, "css+: style.css\n");
+            fprintf(fbob, "favicon+: favicon.ico\n\n");
+            fprintf(fbob, "page: bg #121212 #f5f5f5 'Inter'\n\n");
+            fprintf(fbob, "main make-->\n");
+            fprintf(fbob, "    section make-->\n");
+            fprintf(fbob, "        h1: \"Welcome to Bob\" bold #1e90ff 2.5\n");
+            fprintf(fbob, "        p: \"Built with Bob - the esoteric web language.\"\n");
+            fprintf(fbob, "        button(counter_btn): \"Click me (0)\" #ffffff bg #1e90ff\n");
+            fprintf(fbob, "    <--\n");
+            fprintf(fbob, "<--\n\n");
+            fprintf(fbob, "clicks = 0\n");
+            fprintf(fbob, "when click(counter_btn) make-->\n");
+            fprintf(fbob, "    clicks = clicks + 1\n");
+            fprintf(fbob, "    counter_btn: \"Clicks: \" + clicks\n");
+            fprintf(fbob, "<--\n");
+            fclose(fbob);
+            printf("Created %s\n", app_bob_path);
+        }
+    }
+
+    /* Create starter style.css */
+    FILE *fcss = fopen(style_css_path, "r");
+    if (fcss) {
+        fclose(fcss);
+    } else {
+        fcss = fopen(style_css_path, "w");
+        if (fcss) {
+            fprintf(fcss, "/* Custom CSS styles */\n");
+            fprintf(fcss, "body {\n    margin: 0;\n    padding: 2rem;\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;\n}\n");
+            fprintf(fcss, "button {\n    cursor: pointer;\n    border: 1px solid #1e90ff;\n    padding: 0.75rem 1.5rem;\n    border-radius: 4px;\n    font-size: 1rem;\n    margin-top: 1rem;\n}\n");
+            fclose(fcss);
+            printf("Created %s\n", style_css_path);
+        }
+    }
+
+    printf("\n========================================\n");
+    printf(" Bob Project Initialized!\n");
+    printf(" Location: %s\n", target_dir);
+    printf(" To compile:\n");
+    if (strcmp(target_dir, ".") != 0) {
+        printf("   cd %s\n", target_dir);
+    }
+    printf("   bobc app.bob\n");
+    printf(" Or with split files:\n");
+    printf("   bobc app.bob --split dist\n");
+    printf("========================================\n");
+    return 0;
+}
+
 int main(int argc, char **argv) {
     if (argc < 2) {
         print_usage(argv[0]);
         return 1;
+    }
+
+    if (strcmp(argv[1], "init") == 0) {
+        return handle_init_command(argc, argv);
     }
 
     const char *source_path = NULL;

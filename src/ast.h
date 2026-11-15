@@ -93,7 +93,9 @@ typedef enum {
     STMT_IF,
     STMT_WHEN_CLICK,
     STMT_CLASS_MUTATE,
-    STMT_JS_STMT
+    STMT_JS_STMT,
+    STMT_DOC_TITLE,
+    STMT_HEAD_LINK
 } StmtType;
 
 struct Stmt;
@@ -176,6 +178,18 @@ typedef struct Stmt {
         struct {
             char *code;
         } js_stmt;
+
+        struct {
+            Expr *title_expr;
+        } doc_title;
+
+        struct {
+            char *default_rel; /* "stylesheet", "icon", or NULL */
+            char *href;
+            Attribute *attributes;
+            size_t attr_count;
+            size_t attr_capacity;
+        } head_link;
     } as;
 } Stmt;
 
@@ -198,6 +212,8 @@ BobElement *element_create(const char *tag, const char *custom_id, int line);
 void element_add_child(BobElement *parent, BobElement *child);
 void element_add_attribute(BobElement *elem, const char *name, Expr *value, bool is_boolean);
 void element_free(BobElement *elem);
+
+void head_link_add_attribute(Stmt *stmt, const char *name, Expr *value, bool is_boolean);
 
 Stmt *stmt_create(StmtType type, int line);
 void stmt_free(Stmt *stmt);

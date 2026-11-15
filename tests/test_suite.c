@@ -296,6 +296,49 @@ TEST(test_svg_text_tag_keyword) {
     id_gen_free(gen);
 }
 
+static void test_doc_title_and_head_links(void) {
+    const char *src =
+        "name: \"Custom Page Title\"\n"
+        "css+: link.css\n"
+        "favicon+: favicon.ico\n"
+        "linked+: \"https://fonts.googleapis.com\" [rel=\"preconnect\"]\n";
+
+    MetadataRegistry *meta = meta_load_or_create(":memory:");
+    IdGenerator *gen = id_gen_create();
+    Lexer *lex = lexer_create(src);
+    Parser *p = parser_create(lex, meta, gen);
+
+    Program *prog = parser_parse_program(p);
+    assert(prog->count == 4);
+
+    /* name: "Custom Page Title" */
+    assert(prog->statements[0]->type == STMT_DOC_TITLE);
+    assert(prog->statements[0]->as.doc_title.title_expr != NULL);
+    assert(strcmp(prog->statements[0]->as.doc_title.title_expr->as.str_value, "Custom Page Title") == 0);
+
+    /* css+: link.css */
+    assert(prog->statements[1]->type == STMT_HEAD_LINK);
+    assert(strcmp(prog->statements[1]->as.head_link.default_rel, "stylesheet") == 0);
+    assert(strcmp(prog->statements[1]->as.head_link.href, "link.css") == 0);
+
+    /* favicon+: favicon.ico */
+    assert(prog->statements[2]->type == STMT_HEAD_LINK);
+    assert(strcmp(prog->statements[2]->as.head_link.default_rel, "icon") == 0);
+    assert(strcmp(prog->statements[2]->as.head_link.href, "favicon.ico") == 0);
+
+    /* linked+: "https://fonts.googleapis.com" [rel="preconnect"] */
+    assert(prog->statements[3]->type == STMT_HEAD_LINK);
+    assert(strcmp(prog->statements[3]->as.head_link.href, "https://fonts.googleapis.com") == 0);
+    assert(prog->statements[3]->as.head_link.attr_count == 1);
+    assert(strcmp(prog->statements[3]->as.head_link.attributes[0].name, "rel") == 0);
+
+    program_free(prog);
+    parser_free(p);
+    lexer_free(lex);
+    meta_free(meta);
+    id_gen_free(gen);
+}
+
 int main(void) {
     printf("========================================\n");
     printf(" Running Bob Compiler Unit Test Suite\n");
@@ -310,6 +353,7 @@ int main(void) {
     RUN_TEST(test_arbitrary_depth_nesting);
     RUN_TEST(test_js_interop);
     RUN_TEST(test_svg_text_tag_keyword);
+    RUN_TEST(test_doc_title_and_head_links);
 
     printf("========================================\n");
     printf(" Test Results: %d/%d Passed!\n", tests_passed, tests_run);

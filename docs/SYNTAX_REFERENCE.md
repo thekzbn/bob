@@ -260,3 +260,75 @@ window.addEventListener("resize", () => {
 });
 """
 ```
+
+---
+
+## 14. Document Metadata & Head Links
+
+Bob provides first-class syntax for managing the HTML `<head>` tag, including page titles, stylesheets, favicons, preconnects, and manifest links.
+
+### Document Title (`name:`)
+Sets the document `<title>` in the HTML `<head>`:
+```bob
+name: "My Application Title"
+```
+
+### Stylesheet Links (`css+:`)
+Emits `<link rel="stylesheet" href="...">` into `<head>`:
+```bob
+// Simple path or URL
+css+: link.css
+css+: "styles/main.css"
+css+: "https://cdn.jsdelivr.net/npm/normalize.css"
+
+// With additional HTML attributes
+css+: "styles/print.css" [media="print"]
+```
+
+### Favicon Links (`favicon+:`)
+Emits `<link rel="icon" href="...">` into `<head>`:
+```bob
+favicon+: "favicon.ico"
+favicon+: favicon.png
+favicon+: "assets/icon.svg" [type="image/svg+xml"]
+```
+
+### Generic Head Links (`linked+:`)
+Emits `<link ...>` for font preconnects, manifests, canonical tags, and RSS feeds:
+```bob
+// External resource preconnects
+linked+: "https://fonts.googleapis.com" [rel="preconnect"]
+linked+: "https://fonts.gstatic.com" [rel="preconnect", crossorigin]
+
+// Web manifests and alternate feeds
+linked+: "site.webmanifest" [rel="manifest"]
+linked+: "feed.xml" [rel="alternate", type="application/rss+xml"]
+```
+
+---
+
+## 15. Project Scaffolding & Global Workflow
+
+### Initializing a Project Anywhere
+To start a new Bob project in any folder without copying compiler C source files:
+```bash
+bobc init
+```
+Or specify a new project directory name:
+```bash
+bobc init my-website
+```
+This generates:
+* `app.bob`: Starter Bob application with title, style link, favicon, and interactive logic
+* `style.css`: Starter stylesheet
+* `dist/`: Build output folder
+
+### Compiling
+Compile into a standalone HTML file:
+```bash
+bobc app.bob
+```
+Or emit separated HTML, CSS, and JS files:
+```bash
+bobc app.bob --split dist
+```

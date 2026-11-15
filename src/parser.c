@@ -635,6 +635,81 @@ static Stmt *parse_global_style(Parser *p, StmtType type) {
     return stmt;
 }
 
+/* Parse document title: name: "Document Title" */
+static Stmt *parse_doc_title(Parser *p) {
+    int line = p->current.line;
+    advance(p); /* consume 'name' */
+    match(p, TOKEN_COLON);
+    Expr *title_expr = parse_expression(p);
+    Stmt *s = stmt_create(STMT_DOC_TITLE, line);
+    s->as.doc_title.title_expr = title_expr;
+    return s;
+}
+
+/* Parse head links: css+: ..., linked+: ..., favicon+: ... */
+static Stmt *parse_head_link(Parser *p, const char *default_rel) {
+    int line = p->current.line;
+    advance(p); /* consume 'css+' or 'linked+' or 'favicon+' */
+    if (check(p, TOKEN_COLON)) {
+        advance(p); /* consume ':' */
+    }
+
+    char *href = NULL;
+    /* Read href: string or unquoted path/URL until '[' or newline */
+    if (check(p, TOKEN_STRING) || check(p, TOKEN_TRIPLE_STRING)) {
+        href = bob_strdup(p->current.text);
+        advance(p);
+    } else if (!check(p, TOKEN_LBRACKET) && !check(p, TOKEN_NEWLINE) && !check(p, TOKEN_EOF)) {
+        StringBuilder *sb = sb_create();
+        while (!check(p, TOKEN_LBRACKET) && !check(p, TOKEN_NEWLINE) && !check(p, TOKEN_EOF)) {
+            if (p->current.text) {
+                sb_append(sb, p->current.text);
+            }
+            advance(p);
+        }
+        if (strlen(sb->data) > 0) {
+            href = bob_strdup(sb->data);
+        }
+        sb_free(sb);
+    }
+
+    Stmt *s = stmt_create(STMT_HEAD_LINK, line);
+    s->as.head_link.default_rel = default_rel ? bob_strdup(default_rel) : NULL;
+    s->as.head_link.href = href;
+
+    /* Parse attributes block if present: [rel="preconnect", media="print", ...] */
+    if (check(p, TOKEN_LBRACKET)) {
+        advance(p); /* consume '[' */
+        while (!check(p, TOKEN_RBRACKET) && !check(p, TOKEN_EOF)) {
+            if (check(p, TOKEN_IDENT) || check(p, TOKEN_STRING)) {
+                char *attr_name = bob_strdup(p->current.text);
+                advance(p);
+
+                if (match(p, TOKEN_EQUALS)) {
+                    Expr *val = parse_expression(p);
+                    head_link_add_attribute(s, attr_name, val, false);
+                } else {
+                    /* Boolean attribute */
+                    head_link_add_attribute(s, attr_name, NULL, true);
+                }
+                free(attr_name);
+            } else {
+                parse_error(p, "Expected attribute name in link attribute list");
+                break;
+            }
+
+            if (!match(p, TOKEN_COMMA)) {
+                break;
+            }
+        }
+        if (!match(p, TOKEN_RBRACKET)) {
+            parse_error(p, "Expected ']' at end of link attribute block");
+        }
+    }
+
+    return s;
+}
+
 /* Parse smooth transition */
 static Stmt *parse_smooth(Parser *p) {
     int line = p->current.line;
@@ -831,6 +906,20 @@ static Stmt *parse_statement(Parser *p) {
     /* JS statement */
     if (check(p, TOKEN_KW_JS)) {
         return parse_js_statement(p);
+    }
+
+    /* Document Metadata and Head Links */
+    if (check(p, TOKEN_KW_CSS_PLUS)) {
+        return parse_head_link(p, "stylesheet");
+    }
+    if (check(p, TOKEN_KW_FAVICON_PLUS)) {
+        return parse_head_link(p, "icon");
+    }
+    if (check(p, TOKEN_KW_LINKED_PLUS)) {
+        return parse_head_link(p, NULL);
+    }
+    if (check(p, TOKEN_IDENT) && strcmp(p->current.text, "name") == 0 && p->peek.type == TOKEN_COLON) {
+        return parse_doc_title(p);
     }
 
     /* ID config */

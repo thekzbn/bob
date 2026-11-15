@@ -259,7 +259,17 @@ Token lexer_next_token(Lexer *lexer) {
         }
 
         TokenType type = TOKEN_IDENT;
-        if (strcmp(sb->data, "if") == 0) type = TOKEN_KW_IF;
+        if (strcmp(sb->data, "css") == 0 && peek(lexer) == '+') {
+            sb_append_char(sb, advance(lexer));
+            type = TOKEN_KW_CSS_PLUS;
+        } else if (strcmp(sb->data, "linked") == 0 && peek(lexer) == '+') {
+            sb_append_char(sb, advance(lexer));
+            type = TOKEN_KW_LINKED_PLUS;
+        } else if (strcmp(sb->data, "favicon") == 0 && peek(lexer) == '+') {
+            sb_append_char(sb, advance(lexer));
+            type = TOKEN_KW_FAVICON_PLUS;
+        }
+        else if (strcmp(sb->data, "if") == 0) type = TOKEN_KW_IF;
         else if (strcmp(sb->data, "when") == 0) type = TOKEN_KW_WHEN;
         else if (strcmp(sb->data, "click") == 0) type = TOKEN_KW_CLICK;
         else if (strcmp(sb->data, "whisper") == 0) type = TOKEN_KW_WHISPER;
@@ -340,6 +350,9 @@ const char *token_type_name(TokenType type) {
         case TOKEN_KW_REMOVE_CLASS: return "remove_class";
         case TOKEN_KW_TOGGLE_CLASS: return "toggle_class";
         case TOKEN_KW_JS: return "js";
+        case TOKEN_KW_CSS_PLUS: return "css+";
+        case TOKEN_KW_LINKED_PLUS: return "linked+";
+        case TOKEN_KW_FAVICON_PLUS: return "favicon+";
         default: return "UNKNOWN";
     }
 }

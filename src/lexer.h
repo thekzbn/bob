@@ -61,6 +61,11 @@ typedef enum {
     TOKEN_KW_REMOVE_CLASS, /* remove_class */
     TOKEN_KW_TOGGLE_CLASS, /* toggle_class */
     TOKEN_KW_JS,           /* js */
+
+    /* Document Metadata & Link Keywords */
+    TOKEN_KW_CSS_PLUS,     /* css+ */
+    TOKEN_KW_LINKED_PLUS,  /* linked+ */
+    TOKEN_KW_FAVICON_PLUS, /* favicon+ */
     
     TOKEN_ERROR
 } TokenType;

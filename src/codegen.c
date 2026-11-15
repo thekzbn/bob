@@ -1,5 +1,35 @@
 #include "codegen.h"
 
+#ifdef _WIN32
+#include <direct.h>
+#define bob_mkdir(dir) _mkdir(dir)
+#else
+#include <sys/stat.h>
+#define bob_mkdir(dir) mkdir(dir, 0755)
+#endif
+
+static void ensure_parent_dir(const char *filepath) {
+    if (!filepath) return;
+    char buf[512];
+    strncpy(buf, filepath, sizeof(buf) - 1);
+    buf[sizeof(buf) - 1] = '\0';
+    for (char *p = buf; *p; p++) {
+        if (*p == '\\') *p = '/';
+    }
+    char *last_slash = strrchr(buf, '/');
+    if (last_slash) {
+        *last_slash = '\0';
+        for (char *p = buf + 1; *p; p++) {
+            if (*p == '/') {
+                *p = '\0';
+                bob_mkdir(buf);
+                *p = '/';
+            }
+        }
+        bob_mkdir(buf);
+    }
+}
+
 static void emit_escaped_html_text(StringBuilder *sb, const char *str) {
     if (!str) return;
     for (const char *p = str; *p; p++) {
@@ -424,7 +454,7 @@ bool codegen_generate(Program *prog, const CodegenOptions *options) {
 
     sb_append(js, "function __bob_show(selector, evt) {\n");
     sb_append(js, "    let list = __bob_get(selector, evt);\n");
-    sb_append(js, "    list.forEach(el => { el.style.display = ''; });\n");
+    sb_append(js, "    list.forEach(el => { el.style.display = 'block'; });\n");
     sb_append(js, "}\n\n");
 
     sb_append(js, "function __bob_hide(selector, evt) {\n");
@@ -466,8 +496,77 @@ bool codegen_generate(Program *prog, const CodegenOptions *options) {
             sb_append(js, ";\n");
         }
     }
+
+    /* Resolve document title */
+    const char *doc_title_str = "Bob Application";
+    Expr *dynamic_title_expr = NULL;
+    for (size_t i = 0; i < prog->count; i++) {
+        if (prog->statements[i]->type == STMT_DOC_TITLE) {
+            Expr *e = prog->statements[i]->as.doc_title.title_expr;
+            if (e && e->type == EXPR_STRING && e->as.str_value) {
+                doc_title_str = e->as.str_value;
+            } else if (e) {
+                dynamic_title_expr = e;
+            }
+        }
+    }
+
+    StringBuilder *title_sb = sb_create();
+    emit_escaped_html_text(title_sb, doc_title_str);
+
+    /* Build head links */
+    StringBuilder *head_links = sb_create();
+    for (size_t i = 0; i < prog->count; i++) {
+        Stmt *s = prog->statements[i];
+        if (s->type == STMT_HEAD_LINK) {
+            sb_append(head_links, "  <link");
+            bool has_rel = false;
+            bool has_href = false;
+
+            for (size_t a = 0; a < s->as.head_link.attr_count; a++) {
+                if (strcmp(s->as.head_link.attributes[a].name, "rel") == 0) has_rel = true;
+                if (strcmp(s->as.head_link.attributes[a].name, "href") == 0) has_href = true;
+            }
+
+            if (!has_rel && s->as.head_link.default_rel) {
+                sb_append(head_links, " rel=\"");
+                emit_escaped_attr_val(head_links, s->as.head_link.default_rel);
+                sb_append_char(head_links, '"');
+            }
+
+            if (!has_href && s->as.head_link.href) {
+                sb_append(head_links, " href=\"");
+                emit_escaped_attr_val(head_links, s->as.head_link.href);
+                sb_append_char(head_links, '"');
+            }
+
+            for (size_t a = 0; a < s->as.head_link.attr_count; a++) {
+                Attribute *attr = &s->as.head_link.attributes[a];
+                sb_append_char(head_links, ' ');
+                sb_append(head_links, attr->name);
+                if (!attr->is_boolean && attr->value) {
+                    sb_append(head_links, "=\"");
+                    if (attr->value->type == EXPR_STRING) {
+                        emit_escaped_attr_val(head_links, attr->value->as.str_value);
+                    } else if (attr->value->type == EXPR_NUMBER) {
+                        char nbuf[32];
+                        snprintf(nbuf, sizeof(nbuf), "%g", attr->value->as.num_value);
+                        emit_escaped_attr_val(head_links, nbuf);
+                    }
+                    sb_append_char(head_links, '"');
+                }
+            }
+            sb_append(head_links, ">\n");
+        }
+    }
+
     sb_append(js, "\nwindow.addEventListener('DOMContentLoaded', function() {\n");
     sb_append(js, "    const _event = null;\n");
+    if (dynamic_title_expr) {
+        sb_append(js, "    document.title = ");
+        emit_js_expr(js, dynamic_title_expr, false);
+        sb_append(js, ";\n");
+    }
 
     /* Pass through statements */
     for (size_t i = 0; i < prog->count; i++) {
@@ -518,12 +617,15 @@ bool codegen_generate(Program *prog, const CodegenOptions *options) {
 
     /* Write Single HTML file */
     if (options->single_file_mode) {
+        ensure_parent_dir(options->output_html_file);
         FILE *f = fopen(options->output_html_file, "w");
         if (!f) {
             fprintf(stderr, "Failed to open output file: %s\n", options->output_html_file);
             sb_free(css);
             sb_free(html);
             sb_free(js);
+            sb_free(title_sb);
+            sb_free(head_links);
             return false;
         }
 
@@ -531,7 +633,10 @@ bool codegen_generate(Program *prog, const CodegenOptions *options) {
         fprintf(f, "<html lang=\"en\">\n<head>\n");
         fprintf(f, "  <meta charset=\"UTF-8\">\n");
         fprintf(f, "  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n");
-        fprintf(f, "  <title>Bob Application</title>\n");
+        fprintf(f, "  <title>%s</title>\n", title_sb->data);
+        if (head_links->length > 0) {
+            fprintf(f, "%s", head_links->data);
+        }
         fprintf(f, "  <style>\n%s\n  </style>\n", css->data);
         fprintf(f, "</head>\n<body>\n");
         fprintf(f, "%s\n", html->data);
@@ -542,20 +647,26 @@ bool codegen_generate(Program *prog, const CodegenOptions *options) {
         /* Split files mode */
         char path[512];
         snprintf(path, sizeof(path), "%s/style.css", options->output_dir);
+        ensure_parent_dir(path);
         FILE *fcss = fopen(path, "w");
         if (fcss) { fputs(css->data, fcss); fclose(fcss); }
 
         snprintf(path, sizeof(path), "%s/script.js", options->output_dir);
+        ensure_parent_dir(path);
         FILE *fjs = fopen(path, "w");
         if (fjs) { fputs(js->data, fjs); fclose(fjs); }
 
         snprintf(path, sizeof(path), "%s/index.html", options->output_dir);
+        ensure_parent_dir(path);
         FILE *fhtml = fopen(path, "w");
         if (fhtml) {
             fprintf(fhtml, "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n");
             fprintf(fhtml, "  <meta charset=\"UTF-8\">\n");
             fprintf(fhtml, "  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n");
-            fprintf(fhtml, "  <title>Bob Application</title>\n");
+            fprintf(fhtml, "  <title>%s</title>\n", title_sb->data);
+            if (head_links->length > 0) {
+                fprintf(fhtml, "%s", head_links->data);
+            }
             fprintf(fhtml, "  <link rel=\"stylesheet\" href=\"style.css\">\n");
             fprintf(fhtml, "</head>\n<body>\n%s\n", html->data);
             fprintf(fhtml, "  <script src=\"script.js\"></script>\n");
@@ -564,6 +675,8 @@ bool codegen_generate(Program *prog, const CodegenOptions *options) {
         }
     }
 
+    sb_free(title_sb);
+    sb_free(head_links);
     sb_free(css);
     sb_free(html);
     sb_free(js);
